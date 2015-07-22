@@ -36,7 +36,7 @@ void System::forces() {
     
 void System::run(int nsteps) {
     for (int i = 0; i < nsteps; i++) {
-	std::cout << "Step " << i << "out of "<< nsteps << std::endl;
+	std::cout << "Step " << i << " out of "<< nsteps << std::endl;
 	integ->first_step(part);
 	forces();
 	integ->final_step(part);
