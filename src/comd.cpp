@@ -6,7 +6,7 @@ int main(int argc, char* argv[]) {
     Potential potential = Potential();
     Integrator integrator = Integrator(0.01);
 
-    std::cout << "Inicializando sistema" << std::endl;
+    std::cout << "Initializing system" << std::endl;
     System sys = System(&box, &particles, &potential, &integrator);
     sys.run(1000);
 }
