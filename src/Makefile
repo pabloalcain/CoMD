@@ -4,7 +4,7 @@ CXX=g++
 CFLAGS=-Wall -g -O3 -ffast-math
 
 # list of source files
-SRC=box.cpp integrator.cpp particles.cpp potential.cpp sys.cpp comd.cpp
+SRC=box.cpp integrator.cpp particles.cpp potential.cpp sys.cpp comd.cpp cell.cpp
 OBJ=$(SRC:%.cpp=%.o)
 
 default: comd.x

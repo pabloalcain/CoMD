@@ -12,7 +12,7 @@ void System::forces() {
     double dx, dy, dz;
     double dr, dphi;
 
-    for (int i = 0; i < part->N; i++) {
+    for (int i = 0; i < part->N - 1; i++) {
 	x = part->x[3*i + 0];
 	y = part->x[3*i + 1];
 	z = part->x[3*i + 2];
@@ -20,6 +20,7 @@ void System::forces() {
 	    dx = x - part->x[3*j + 0];
 	    dy = y - part->x[3*j + 1];
 	    dz = z - part->x[3*j + 2];
+	    
 	    dr = dx * dx + dy * dy + dz * dz;
 	    dr = sqrt(dr);
 	    dphi = pot->dphi(dr);

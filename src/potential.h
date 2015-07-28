@@ -11,6 +11,7 @@ class Potential
     double e;
     
 public:
+    double rcut;
     Potential();
     double dphi(double dr);
 };

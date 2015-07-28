@@ -10,4 +10,3 @@ int main(int argc, char* argv[]) {
     System sys = System(&box, &particles, &potential, &integrator);
     sys.run(1000);
 }
-    

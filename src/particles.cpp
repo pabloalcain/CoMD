@@ -9,9 +9,9 @@ Particles::Particles(int nprot, int nneut, Box box){
     spin = (bool *) malloc(N * sizeof(char));
     
     int L = (int) ceil(pow(N, 1.0/3.0));
-    double dx = box.Lx/L;
-    double dy = box.Ly/L;
-    double dz = box.Lz/L;
+    double dx = box.size[0]/L;
+    double dy = box.size[1]/L;
+    double dz = box.size[2]/L;
     
     int idx;
     /* By default we put the particles on a lattice */
@@ -44,7 +44,7 @@ Particles::Particles(int nprot, int nneut, Box box){
  
 
     /* Dummy values */
-    double sig_r = 1.0;
-    double sig_p = 1.0;
-    double mass = 1.0;
+    sig_r = 1.0;
+    sig_p = 1.0;
+    mass = 1.0;
 }

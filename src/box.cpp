@@ -1,7 +1,6 @@
 #include "box.h"
 
 Box::Box(double L) {
-    Lx = L;
-    Ly = L;
-    Lz = L;
+  for (int i=0; i<3; i++)
+    size[i] = L;
 }
