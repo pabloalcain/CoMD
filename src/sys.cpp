@@ -5,6 +5,7 @@ System::System(Box *_box, Particles *_part, Potential *_pot, Integrator *_integ)
     part = _part;
     pot = _pot;
     integ = _integ;
+    cells = new CellList(5.0, part, pot, box);
 }
 
 void System::forces() {
@@ -38,6 +39,7 @@ void System::forces() {
 void System::run(int nsteps) {
     for (int i = 0; i < nsteps; i++) {
 	std::cout << "Step " << i << " out of "<< nsteps << std::endl;
+	cells->update(part);
 	integ->first_step(part);
 	forces();
 	integ->final_step(part);

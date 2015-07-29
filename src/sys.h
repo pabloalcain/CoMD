@@ -11,8 +11,6 @@
 #include "cell.h"
 #include "box.h"
 
-class CellList;
-
 class System {
   /* This is the basic system structure */
   Box *box;

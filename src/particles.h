@@ -15,6 +15,7 @@ class Particles
     */
     friend class Integrator;
     friend class System;
+    friend class CellList;
     int N;
     double *x, *v, *f;
     bool *isospin, *spin;

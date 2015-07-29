@@ -1,19 +1,22 @@
 #ifndef CELL_H
 #define CELL_H
 
-#include "sys.h"
-class System;
+#include "box.h"
+#include "particles.h"
+#include "potential.h"
+
+#include <iostream>
+#include <math.h>
+#include <stdlib.h>
 class Cell
 {
+  friend class CellList;
   /* Cell structure */
-  friend class Particles;
-  friend class Box;
-
   int natoms; /* number of atoms in this cell */
   int *idxlist; /* list of atom indices in the cell */
   
  public:
-  Cell(int idx);
+  Cell(int nidx);
   void add_atom(int idx);
 };
 
@@ -33,8 +36,8 @@ class CellList
   int *pairs; /* Pairs of cells that are within cutoff distance */
   
  public:
-  CellList(double length);
-  void update(System *sys);
+  CellList(double length, Particles *part, Potential *pot, Box *box);
+  void update(Particles *part);
 };
    
 #endif
