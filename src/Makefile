@@ -1,7 +1,7 @@
 # -*- Makefile -*-
 SHELL=/bin/sh
 CXX=g++
-CFLAGS=-Wall -g -O3 -ffast-math
+CFLAGS=-Wall -g -O3 -ffast-math -Wextra -pedantic
 
 # list of source files
 SRC=box.cpp integrator.cpp particles.cpp potential.cpp sys.cpp comd.cpp cell.cpp

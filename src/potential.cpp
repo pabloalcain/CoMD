@@ -8,10 +8,10 @@ Potential::Potential() {
     asym = 1.0;
     cs = 1.0;
     e = 1.0;
-};
+}
 
 double Potential::dphi(double dr) {
     /* Need to work out the expression for dphi */
-    return 0.0;
-};
+    return 0.0*dr;
+}
 	

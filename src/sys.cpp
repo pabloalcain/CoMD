@@ -1,48 +1,80 @@
 #include "sys.h"
 
 System::System(Box *_box, Particles *_part, Potential *_pot, Integrator *_integ){
-    box = _box;
-    part = _part;
-    pot = _pot;
-    integ = _integ;
-    cells = new CellList(5.0, part, pot, box);
+  box = _box;
+  part = _part;
+  pot = _pot;
+  integ = _integ;
+  cells = new CellList(5.0, part, pot, box);
 }
 
 void System::forces() {
-    double x, y, z;
-    double dx, dy, dz;
-    double dr, dphi;
+  double x[3];
+  double dx[3];
+  double dr, dphi;
 
-    for (int i = 0; i < part->N - 1; i++) {
-	x = part->x[3*i + 0];
-	y = part->x[3*i + 1];
-	z = part->x[3*i + 2];
- 	for (int j = i; j < part->N; j++) {
-	    dx = x - part->x[3*j + 0];
-	    dy = y - part->x[3*j + 1];
-	    dz = z - part->x[3*j + 2];
-	    
-	    dr = dx * dx + dy * dy + dz * dz;
-	    dr = sqrt(dr);
-	    dphi = pot->dphi(dr);
-	    part->f[3*i + 0] += dphi * dx;
-	    part->f[3*i + 1] += dphi * dy;
-	    part->f[3*i + 2] += dphi * dz;
-	    /* Newton's 3rd law */
-	    part->f[3*j + 0] -= dphi * dx;
-	    part->f[3*j + 1] -= dphi * dy;
-	    part->f[3*j + 2] -= dphi * dz;
+  /* Interaction of particles in the same cell */
+  for (int k = 0; k < cells->ncells; k++) {
+    Cell *cell = cells->list + k;
+    for (int i = 0; i < cell->natoms - 1; i++) {
+      int ii = cell->idxlist[i];
+      for (int l = 0; l < 3; l++) {
+	x[l] = part->x[3*ii + l];
+      }
+      
+      for (int j = i+1; i < cell->natoms; j++) {
+	int jj = cell->idxlist[j];
+	for (int l = 0; l < 3; l++) {
+	  dx[l] = x[l] - part->x[3*ii + l];
 	}
+	dr = dx[0] * dx[0] + dx[1] * dx[1] + dx[2] * dx[2];
+	dr = sqrt(dr);
+	dphi = pot->dphi(dr);
+	for (int l = 0; l < 3; l++) {
+	  /* Newton's 3rd law */
+	  part->f[3*ii + l] += dphi * dx[l];
+	  part->f[3*jj + l] -= dphi * dx[l];
+	}
+      }
     }
-}
-    
+  }
+
+  /* Interaction of particles in different cells */
+  for (int k = 0; k < cells->npairs; k++) {
+    Cell *c1 = cells->list + 2*k+0;
+    Cell *c2 = cells->list + 2*k+1;
+    for (int i = 0; i < c1->natoms; i++) {
+      int ii = c1->idxlist[i];
+      for (int l = 0; l < 3; l++) {
+	x[l] = part->x[3*ii + l];
+      }
+      
+      for (int j = 0; i < c2->natoms; j++) {
+	int jj = c2->idxlist[j];
+	for (int l = 0; l < 3; l++) {
+	  dx[l] = x[l] - part->x[3*ii + l];
+	}
+	dr = dx[0] * dx[0] + dx[1] * dx[1] + dx[2] * dx[2];
+	dr = sqrt(dr);
+	dphi = pot->dphi(dr);
+	for (int l = 0; l < 3; l++) {
+	  /* Newton's 3rd law */
+	  part->f[3*ii + l] += dphi * dx[l];
+	  part->f[3*jj + l] -= dphi * dx[l];
+	}
+      }
+    }
+  }
+}  
+
+
 void System::run(int nsteps) {
-    for (int i = 0; i < nsteps; i++) {
-	std::cout << "Step " << i << " out of "<< nsteps << std::endl;
-	cells->update(part);
-	integ->first_step(part);
-	forces();
-	integ->final_step(part);
-    }
+  for (int i = 0; i < nsteps; i++) {
+    std::cout << "Step " << i << " out of "<< nsteps << std::endl;
+    cells->update(part);
+    integ->first_step(part);
+    forces();
+    integ->final_step(part);
+  }
 }
 

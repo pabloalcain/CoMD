@@ -4,13 +4,13 @@ Cell::Cell(int nidx) {
   natoms = 0;
   /* cell density < 2x avg. density */
   idxlist = (int *) malloc(nidx*sizeof(int));
-};
+}
 
 void Cell::add_atom(int idx) {
   /* Add the atom idx in position "natoms" */
   idxlist[natoms] = idx;
   natoms++;
-};
+}
 
 CellList::CellList(double length, Particles *part, Potential *pot, Box *box){
   /* length is the (max) size of the cell. It will be slightly changed
@@ -88,7 +88,7 @@ CellList::CellList(double length, Particles *part, Potential *pot, Box *box){
   std::cout << "Cell list has " << ngrid[0] << "x" << ngrid[1] << "x" << ngrid[2]
 	    << "=" << ncells << " cells with" << npairs << "/" << ncells*(ncells-1)/2
 	    << " pairs and " << nidx << " atoms/celllist." << std::endl;
-};
+}
 
 void CellList::update(Particles *part)
 {
