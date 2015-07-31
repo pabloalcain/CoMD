@@ -86,7 +86,7 @@ CellList::CellList(double length, Particles *part, Potential *pot, Box *box){
     }
   }
   std::cout << "Cell list has " << ngrid[0] << "x" << ngrid[1] << "x" << ngrid[2]
-	    << "=" << ncells << " cells with" << npairs << "/" << ncells*(ncells-1)/2
+	    << "=" << ncells << " cells with " << npairs << "/" << ncells*(ncells-1)/2
 	    << " pairs and " << nidx << " atoms/celllist." << std::endl;
 }
 

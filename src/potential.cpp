@@ -8,6 +8,7 @@ Potential::Potential() {
     asym = 1.0;
     cs = 1.0;
     e = 1.0;
+    rcut = 1.0;
 }
 
 double Potential::dphi(double dr) {

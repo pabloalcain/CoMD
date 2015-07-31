@@ -28,8 +28,8 @@ class CellList
   friend class System;
   int nidx; /* Maximum number of atoms indices in each cell */
   int ngrid[3]; /* Number of cells in each dimension */
-  int delta[3]; /* Actual size of the cells in each dimension */
   int boxoffs[3]; /* Box offset in each dimension */
+  double delta[3]; /* Actual size of the cells in each dimension */
 
   int ncells; /* Total number of cells */
   Cell *list; /* Actual list of cells */

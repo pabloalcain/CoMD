@@ -5,7 +5,7 @@ System::System(Box *_box, Particles *_part, Potential *_pot, Integrator *_integ)
   part = _part;
   pot = _pot;
   integ = _integ;
-  cells = new CellList(5.0, part, pot, box);
+  cells = new CellList(1.0, part, pot, box);
 }
 
 void System::forces() {
@@ -22,7 +22,7 @@ void System::forces() {
 	x[l] = part->x[3*ii + l];
       }
       
-      for (int j = i+1; i < cell->natoms; j++) {
+      for (int j = i+1; j < cell->natoms; j++) {
 	int jj = cell->idxlist[j];
 	for (int l = 0; l < 3; l++) {
 	  dx[l] = x[l] - part->x[3*ii + l];
@@ -49,7 +49,7 @@ void System::forces() {
 	x[l] = part->x[3*ii + l];
       }
       
-      for (int j = 0; i < c2->natoms; j++) {
+      for (int j = 0; j < c2->natoms; j++) {
 	int jj = c2->idxlist[j];
 	for (int l = 0; l < 3; l++) {
 	  dx[l] = x[l] - part->x[3*ii + l];
