@@ -47,38 +47,43 @@ CellList::CellList(double length, Particles *part, Potential *pot, Box *box){
     i1[0] = i % ngrid[0];
     i1[1] = i % (ngrid[0] * ngrid[1]) / ngrid[0];
     i1[2] = i / (ngrid[0] * ngrid[1]);
-
+    
     for (int j=i+1; j<ncells; ++j) {
       int i2[3];
       double r[3];
-      
+      double dist, delta2, delta3;
       i2[0] = j % ngrid[0];
       i2[1] = j % (ngrid[0] * ngrid[1]) / ngrid[0];
       i2[2] = j / (ngrid[0] * ngrid[1]);
+
 
       for (int k=0; k < 3; k++) {
 	r[k] = (i2[k] - i1[k]) * delta[k];
       }
 
       /* check for cells on a line that are too far apart */
-      for (int k=0; k < 3; k++) {
-	if (fabs(r[k]) > pot->rcut + delta[k]) continue;
-      }
-      /* check for cells in a plane that are too far apart */
+      if (fabs(r[0]) > pot->rcut + delta[0]) continue;
+      if (fabs(r[1]) > pot->rcut + delta[1]) continue;
+      if (fabs(r[2]) > pot->rcut + delta[2]) continue;
 
-      for (int k=0; k < 3; k++) {
-	int k2 = (k + 1) % 3;
-	double dist = r[k]*r[k] + r[k2]*r[k2];	
-	double delta2 = delta[k]*delta[k] + delta[k2]*delta[k2];
-	if (sqrt(dist) > pot->rcut + sqrt(delta2)) continue;
-      }
+      /* check for cells in a plane that are too far apart */
+      dist = r[0]*r[0] + r[1]*r[1];	
+      delta2 = delta[0]*delta[0] + delta[1]*delta[1];
+      if (sqrt(dist) > pot->rcut + sqrt(delta2)) continue;
+
+      dist = r[2]*r[2] + r[1]*r[1];	
+      delta2 = delta[2]*delta[2] + delta[1]*delta[1];
+      if (sqrt(dist) > pot->rcut + sqrt(delta2)) continue;
+
+      dist = r[0]*r[0] + r[2]*r[2];	
+      delta2 = delta[0]*delta[0] + delta[2]*delta[2];
+      if (sqrt(dist) > pot->rcut + sqrt(delta2)) continue;
 
       /* other cells that are too far apart */
-      for (int k=0; k<3; k++) {
-	double dist = r[0]*r[0] + r[1]*r[1] + r[2]*r[2];
-	double delta3 = delta[0]*delta[0] + delta[1]*delta[1] + delta[2]*delta[2];
-	if (sqrt(dist) > pot->rcut + sqrt(delta3)) continue;
-      }
+      dist = r[0]*r[0] + r[1]*r[1] + r[2]*r[2];
+      delta3 = delta[0]*delta[0] + delta[1]*delta[1] + delta[2]*delta[2];
+      if (sqrt(dist) > pot->rcut + sqrt(delta3)) continue;
+
       /* cells are close enough. add to list */
       pairs[2*npairs+0] = i;
       pairs[2*npairs+1] = j;
@@ -104,7 +109,6 @@ void CellList::update(Particles *part)
       i1[j] = part->x[atom*3 + j]/delta[j];
 
     cellidx = ngrid[0]*ngrid[1]*i1[2]+ngrid[0]*i1[1]+i1[0];
-
     list[cellidx].add_atom(atom);
     int idx = list[cellidx].natoms;
     if (idx > maxidx) maxidx = idx;
