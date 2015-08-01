@@ -25,7 +25,7 @@ void System::forces() {
       for (int j = i+1; j < cell->natoms; j++) {
 	int jj = cell->idxlist[j];
 	for (int l = 0; l < 3; l++) {
-	  dx[l] = x[l] - part->x[3*ii + l];
+	  dx[l] = x[l] - part->x[3*jj + l];
 	}
 	dr = dx[0] * dx[0] + dx[1] * dx[1] + dx[2] * dx[2];
 	dr = sqrt(dr);
@@ -41,8 +41,8 @@ void System::forces() {
 
   /* Interaction of particles in different cells */
   for (int k = 0; k < cells->npairs; k++) {
-    Cell *c1 = cells->list + 2*k+0;
-    Cell *c2 = cells->list + 2*k+1;
+    Cell *c1 = cells->list + cells->pairs[2*k+0];
+    Cell *c2 = cells->list + cells->pairs[2*k+1];
     for (int i = 0; i < c1->natoms; i++) {
       int ii = c1->idxlist[i];
       for (int l = 0; l < 3; l++) {
@@ -52,7 +52,7 @@ void System::forces() {
       for (int j = 0; j < c2->natoms; j++) {
 	int jj = c2->idxlist[j];
 	for (int l = 0; l < 3; l++) {
-	  dx[l] = x[l] - part->x[3*ii + l];
+	  dx[l] = x[l] - part->x[3*jj + l];
 	}
 	dr = dx[0] * dx[0] + dx[1] * dx[1] + dx[2] * dx[2];
 	dr = sqrt(dr);
@@ -66,6 +66,34 @@ void System::forces() {
     }
   }
 }  
+
+void System::forces_all() {
+  double x[3];
+  double dx[3];
+  double dr, dphi;
+
+  /* Interaction of particles in the same cell */
+  for (int ii = 0; ii < part->N-1; ii++) {
+      for (int l = 0; l < 3; l++) {
+	  x[l] = part->x[3*ii + l];
+      }
+      
+      for (int jj = ii+1; jj < part->N; jj++) {
+	  for (int l = 0; l < 3; l++) {
+	      dx[l] = x[l] - part->x[3*jj + l];
+	  }
+	  dr = dx[0] * dx[0] + dx[1] * dx[1] + dx[2] * dx[2];
+	  dr = sqrt(dr);
+	  dphi = pot->dphi(dr);
+	  for (int l = 0; l < 3; l++) {
+	      /* Newton's 3rd law */
+	      part->f[3*ii + l] += dphi * dx[l];
+	      part->f[3*jj + l] -= dphi * dx[l];
+	  }
+      }
+  }
+}
+
 
 
 void System::run(int nsteps) {

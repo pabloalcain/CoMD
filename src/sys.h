@@ -21,6 +21,7 @@ class System {
  public:
   System(Box *_box, Particles *_part, Potential *_pot, Integrator *_integ);
   void forces();
+  void forces_all();
   void run(int nsteps);
 };
 
