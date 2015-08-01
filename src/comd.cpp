@@ -12,7 +12,7 @@ int main(int argc, char* argv[]) {
 	exit(1);
     }
     nsteps = atoi(argv[1]);
-    std::cout << "Initializing system" << std::endl;
+    std::cout << "Initializing system..." << std::endl;
     System sys = System(&box, &particles, &potential, &integrator);
     sys.run(nsteps);
 }
