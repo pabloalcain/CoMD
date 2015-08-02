@@ -1,10 +1,11 @@
 #include "sys.h"
 
-System::System(Box *_box, Particles *_part, Potential *_pot, Integrator *_integ){
+System::System(Box *_box, Particles *_part, Potential *_pot, Integrator *_integ, Dump *_dump){
   box = _box;
   part = _part;
   pot = _pot;
   integ = _integ;
+  dump = _dump;
   cells = new CellList(1.0, part, pot, box);
 }
 
@@ -99,6 +100,9 @@ void System::forces_all() {
 void System::run(int nsteps) {
   for (int i = 0; i < nsteps; i++) {
     std::cout << "Step " << i << " out of "<< nsteps << std::endl;
+    if (i % dump->nfreq == 0) {
+      dump->write(i, part, box);
+    }
     cells->update(part);
     integ->first_step(part);
     forces();

@@ -10,6 +10,7 @@
 #include "integrator.h"
 #include "cell.h"
 #include "box.h"
+#include "dump.h"
 
 class System {
   /* This is the basic system structure */
@@ -18,8 +19,9 @@ class System {
   Potential *pot;
   Integrator *integ;
   CellList *cells;
+  Dump *dump;
  public:
-  System(Box *_box, Particles *_part, Potential *_pot, Integrator *_integ);
+  System(Box *_box, Particles *_part, Potential *_pot, Integrator *_integ, Dump *_dump);
   void forces();
   void forces_all();
   void run(int nsteps);
