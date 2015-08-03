@@ -39,7 +39,7 @@ class CellList
   
  public:
   CellList(double length, Particles *part, Potential *pot, Box *box);
-  void update(Particles *part);
+  void update(Particles *part, Box *box);
 };
    
 #endif

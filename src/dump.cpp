@@ -20,9 +20,9 @@ void Dump::write_header(int step, Particles *part, Box *box) {
   *dumpfile << "ITEM: NUMBER OF ATOMS" << std::endl;
   *dumpfile << part->N << std::endl;
   *dumpfile << "ITEM: BOX BOUNDS p p p" << std::endl;
-  *dumpfile << 0 << " " << box->size[0] << std::endl;
-  *dumpfile << 0 << " " << box->size[1] << std::endl;
-  *dumpfile << 0 << " " << box->size[2] << std::endl;
+  *dumpfile << -box->size[0]/2 << " " << box->size[0]/2 << std::endl;
+  *dumpfile << -box->size[1]/2 << " " << box->size[1]/2 << std::endl;
+  *dumpfile << -box->size[2]/2 << " " << box->size[2]/2 << std::endl;
   *dumpfile << "ITEM: ATOMS id type x y z vx vy vz" << std::endl;
 }
 

@@ -26,6 +26,7 @@ class Particles
 public:
     Particles(int nprot, int nneut, Box box);
     void pbc(Box box);
+    double pe, ke;
 };
 #endif
 

@@ -4,7 +4,7 @@ CXX=g++
 CFLAGS=-Wall -g -O0 -pg -ffast-math -Wextra -pedantic
 
 # list of source files
-SRC=box.cpp integrator.cpp particles.cpp potential.cpp sys.cpp cell.cpp dump.cpp comd.cpp 
+SRC=box.cpp integrator.cpp particles.cpp potential.cpp sys.cpp cell.cpp dump.cpp thermo.cpp comd.cpp 
 OBJ=$(SRC:%.cpp=%.o)
 
 default: comd.x

@@ -21,12 +21,16 @@ Particles::Particles(int nprot, int nneut, Box box){
 	    for (int iz = 0; iz < L; iz++) {
 		idx = ix * L * L + iy * L + iz;
 		if (idx >= N) continue;
-		x[3*idx + 0] = ix * dx;
-		x[3*idx + 1] = iy * dy;
-		x[3*idx + 2] = iz * dz;
+		x[3*idx + 0] = (ix + 0.001) * dx;
+		x[3*idx + 1] = (iy + 0.001)* dy;
+		x[3*idx + 2] = (iz + 0.001)* dz;
 	    }
 	}
     }
+
+    for (int i = 0; i < 3*N; i++)
+	v[i] = 0.0;
+
     
     /* We set the first as neutrons, the last as protons */
     for (int i = 0; i < nneut; i++)
@@ -34,6 +38,7 @@ Particles::Particles(int nprot, int nneut, Box box){
     for (int i = nneut; i < N; i++)
 	isospin[i] = true;
 
+    
     /* Now we alternate the spin */
     
     bool status = true;

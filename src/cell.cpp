@@ -34,7 +34,7 @@ CellList::CellList(double length, Particles *part, Potential *pot, Box *box){
   pairs = (int *) malloc(2*ncells*ncells*sizeof(int));
 
   /* allocate index lists within cell. cell density ~< 2x avg. density */
-  nidx = 2*part->N / ncells + 2;
+  nidx = 4*part->N / ncells + 2;
   for (int i=0; i<ncells; ++i) {
     list[i] = Cell(nidx);
   }
@@ -95,27 +95,30 @@ CellList::CellList(double length, Particles *part, Potential *pot, Box *box){
 	    << " pairs and " << nidx << " atoms/celllist." << std::endl;
 }
 
-void CellList::update(Particles *part)
+void CellList::update(Particles *part, Box *box)
 {
   for (int i=0; i < ncells; i++) {
     list[i].natoms=0;
   }
-
+  
   int maxidx=0;
   for (int atom=0; atom < part->N; atom++) {
+    
     int i1[3];
+    double *pos = (part->x + atom*3);
     int cellidx;
-    for (int j= 0; j < 3; j++)
-      i1[j] = floor(part->x[atom*3 + j]/delta[j]);
-
+    for (int j= 0; j < 3; j++){
+      pos[j] = box->pbc(pos[j], j);
+      i1[j] = floor((pos[j] + box->size[j]/2.0)/delta[j]);
+    }
     cellidx = ngrid[0]*ngrid[1]*i1[2]+ngrid[0]*i1[1]+i1[0];
     if (cellidx > ncells - 1 || cellidx < 0) {
       std::cout << "Error: cell " << i1[0] << ", " << i1[1] << ", " << i1[2] <<
-	" does not exist. Maybe atom " << atom << ", x = " << part->x[atom*3] << ", " <<
-	part->x[atom*3+1] << ", " << part->x[atom*3+2] << " is out of bounds?" << std::endl;
+	" does not exist. Maybe atom " << atom << ", x = " << pos[0] << ", " <<
+	pos[1] << ", " << pos[2] << " is out of bounds?" << std::endl;
       exit(1);
     }
-
+    
     list[cellidx].add_atom(atom);
     int idx = list[cellidx].natoms;
     if (idx > maxidx) maxidx = idx;

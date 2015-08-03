@@ -11,6 +11,7 @@
 #include "cell.h"
 #include "box.h"
 #include "dump.h"
+#include "thermo.h"
 
 class System {
   /* This is the basic system structure */
@@ -20,8 +21,11 @@ class System {
   Integrator *integ;
   CellList *cells;
   Dump *dump;
+  Thermo *thermo;
+  
  public:
-  System(Box *_box, Particles *_part, Potential *_pot, Integrator *_integ, Dump *_dump);
+  System(Box *_box, Particles *_part, Potential *_pot,
+	 Integrator *_integ, Dump *_dump, Thermo *_thermo);
   void forces();
   void forces_all();
   void run(int nsteps);
