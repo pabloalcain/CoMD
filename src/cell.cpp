@@ -38,7 +38,7 @@ CellList::CellList(double length, Particles *part, Potential *pot, Box *box){
   for (int i=0; i<ncells; ++i) {
     list[i] = Cell(nidx);
   }
-
+  
   /* build cell pair list, assuming newtons 3rd law. */
   npairs = 0;
   for (int i=0; i < ncells-1; ++i) {
@@ -106,9 +106,16 @@ void CellList::update(Particles *part)
     int i1[3];
     int cellidx;
     for (int j= 0; j < 3; j++)
-      i1[j] = part->x[atom*3 + j]/delta[j];
+      i1[j] = floor(part->x[atom*3 + j]/delta[j]);
 
     cellidx = ngrid[0]*ngrid[1]*i1[2]+ngrid[0]*i1[1]+i1[0];
+    if (cellidx > ncells - 1 || cellidx < 0) {
+      std::cout << "Error: cell " << i1[0] << ", " << i1[1] << ", " << i1[2] <<
+	" does not exist. Maybe atom " << atom << ", x = " << part->x[atom*3] << ", " <<
+	part->x[atom*3+1] << ", " << part->x[atom*3+2] << " is out of bounds?" << std::endl;
+      exit(1);
+    }
+
     list[cellidx].add_atom(atom);
     int idx = list[cellidx].natoms;
     if (idx > maxidx) maxidx = idx;
