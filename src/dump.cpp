@@ -28,7 +28,7 @@ void Dump::write_header(int step, Particles *part, Box *box) {
 
 void Dump::write_part(Particles *part) {
   for (int i = 0; i < part->N; i++) {
-    int is = part->isospin[i]?1:0;
+    int is = part->isospin[i]?2:1;
     *dumpfile << i;
     *dumpfile << " " << is;
     for (int l = 0; l < 3; l++) 
