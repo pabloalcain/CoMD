@@ -58,7 +58,7 @@ CellList::CellList(double length, Particles *part, Potential *pot, Box *box){
 
 
       for (int k=0; k < 3; k++) {
-	r[k] = (i2[k] - i1[k]) * delta[k];
+	r[k] = box->pbc((i2[k] - i1[k]) * delta[k], k);
       }
 
       /* check for cells on a line that are too far apart */
