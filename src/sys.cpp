@@ -12,7 +12,7 @@ System::System(Box *_box, Particles *_part, Potential *_pot,
 }
 
 void System::forces() {
-  double x[3];
+  double *x;
   double dx[3];
   double dr, dphi, pe;
 
@@ -27,14 +27,12 @@ void System::forces() {
     Cell *cell = cells->list + k;
     for (int i = 0; i < cell->natoms - 1; i++) {
       int ii = cell->idxlist[i];
-      for (int l = 0; l < 3; l++) {
-	x[l] = part->x[3*ii + l];
-      }
+      x = part->x + 3*ii;
       
       for (int j = i+1; j < cell->natoms; j++) {
 	int jj = cell->idxlist[j];
 	for (int l = 0; l < 3; l++) {
-	  dx[l] = x[l] - part->x[3*jj + l];
+	  dx[l] = box->pbc(x[l] - part->x[3*jj + l], l);
 	}
 	dr = dx[0] * dx[0] + dx[1] * dx[1] + dx[2] * dx[2];
 	if (dr < pot->rcut * pot->rcut) {
@@ -57,9 +55,7 @@ void System::forces() {
     Cell *c2 = cells->list + cells->pairs[2*k+1];
     for (int i = 0; i < c1->natoms; i++) {
       int ii = c1->idxlist[i];
-      for (int l = 0; l < 3; l++) {
-	x[l] = part->x[3*ii + l];
-      }
+      x = part->x + 3*ii;
       
       for (int j = 0; j < c2->natoms; j++) {
 	int jj = c2->idxlist[j];
@@ -83,7 +79,7 @@ void System::forces() {
 }  
 
 void System::forces_all() {
-  double x[3];
+  double *x;
   double dx[3];
   double dr, dphi;
   double pe;
@@ -93,15 +89,15 @@ void System::forces_all() {
       part->f[ii] = 0;
   
   for (int ii = 0; ii < part->N-1; ii++) {
-    for (int l = 0; l < 3; l++) {
-      x[l] = part->x[3*ii + l];
-    }
+    x = part->x + 3*ii;
     
     for (int jj = ii+1; jj < part->N; jj++) {
       for (int l = 0; l < 3; l++) {
-	dx[l] = x[l] - part->x[3*jj + l];
+	dx[l] = box->pbc(x[l] - part->x[3*jj + l], l);
       }
       dr = dx[0] * dx[0] + dx[1] * dx[1] + dx[2] * dx[2];
+      
+
       if (dr < pot->rcut * pot->rcut) {
 	  dr = sqrt(dr);
 	  dphi = pot->dphi(dr, &pe);
@@ -120,6 +116,7 @@ void System::forces_all() {
 
 void System::run(int nsteps) {
   cells->update(part, box);
+  forces();
     
   for (int i = 0; i < nsteps; i++) {
     if (i % dump->nfreq == 0) {
@@ -129,7 +126,7 @@ void System::run(int nsteps) {
 	thermo->write(i, part);
     }
     integ->first_step(part);
-    forces_all();
+    forces();
     integ->final_step(part);
     cells->update(part, box);
     
