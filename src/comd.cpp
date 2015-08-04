@@ -2,18 +2,18 @@
 
 int main(int argc, char* argv[]) {
     int nsteps;
-    Box box = Box(7.0);
-    Particles particles = Particles(10, 10, box);
+    Box box = Box(20.0);
+    Particles particles = Particles(400, 400, box);
     Potential potential = Potential();
-    Integrator integrator = Integrator(0.01);
+    Integrator integrator = Integrator(0.0005);
 
     std::ofstream file;
     file.open("dump.lammpstrj");
-    Dump dump = Dump(1, &file);
+    Dump dump = Dump(100, &file);
 
     std::ofstream file2;
     file2.open("thermo.out");
-    Thermo thermo = Thermo(1, &file2);
+    Thermo thermo = Thermo(100, &file2);
     
     if (argc != 2) {
 	std::cerr << "usage: " << argv[0] << " nsteps" << std::endl;

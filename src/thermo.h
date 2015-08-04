@@ -2,6 +2,7 @@
 #define THERMO_H
 
 #include <fstream>
+#include <iostream>
 #include <string>
 
 #include "particles.h"

@@ -34,7 +34,7 @@ CellList::CellList(double length, Particles *part, Potential *pot, Box *box){
   pairs = (int *) malloc(2*ncells*ncells*sizeof(int));
 
   /* allocate index lists within cell. cell density ~< 2x avg. density */
-  nidx = 4*part->N / ncells + 2;
+  nidx = 10*part->N / ncells + 2;
   for (int i=0; i<ncells; ++i) {
     list[i] = Cell(nidx);
   }

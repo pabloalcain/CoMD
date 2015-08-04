@@ -12,6 +12,7 @@ class Potential
     
 public:
     double rcut;
+    double phicut;
     Potential();
     double dphi(double dr, double *pe);
 };

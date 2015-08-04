@@ -8,7 +8,7 @@ System::System(Box *_box, Particles *_part, Potential *_pot,
   integ = _integ;
   dump = _dump;
   thermo = _thermo;
-  cells = new CellList(1.0, part, pot, box);
+  cells = new CellList(pot->rcut, part, pot, box);
 }
 
 void System::forces() {
@@ -17,6 +17,10 @@ void System::forces() {
   double dr, dphi, pe;
 
   part->pe = 0;
+
+  for (int ii = 0; ii < 3*part->N; ii++)
+      part->f[ii] = 0;
+
 
   /* Interaction of particles in the same cell */
   for (int k = 0; k < cells->ncells; k++) {
@@ -85,6 +89,8 @@ void System::forces_all() {
   double pe;
 
   part->pe = 0;
+  for (int ii = 0; ii < 3*part->N; ii++)
+      part->f[ii] = 0;
   
   for (int ii = 0; ii < part->N-1; ii++) {
     for (int l = 0; l < 3; l++) {
@@ -96,37 +102,37 @@ void System::forces_all() {
 	dx[l] = x[l] - part->x[3*jj + l];
       }
       dr = dx[0] * dx[0] + dx[1] * dx[1] + dx[2] * dx[2];
-      dr = sqrt(dr);
-      dphi = pot->dphi(dr, &pe);
-      part->pe += pe;
-      for (int l = 0; l < 3; l++) {
-	/* Newton's 3rd law */
-	part->f[3*ii + l] += dphi * dx[l];
-	part->f[3*jj + l] -= dphi * dx[l];
+      if (dr < pot->rcut * pot->rcut) {
+	  dr = sqrt(dr);
+	  dphi = pot->dphi(dr, &pe);
+	  part->pe += pe;
+	  for (int l = 0; l < 3; l++) {
+	      /* Newton's 3rd law */
+	      part->f[3*ii + l] += dphi * dx[l];
+	      part->f[3*jj + l] -= dphi * dx[l];
+	  }
       }
     }
-  }
-  for (int ii = 0; ii < 3*part->N; ii++) {
-    part->f[ii] = 1.0;
   }
 }
 
 
 
 void System::run(int nsteps) {
+  cells->update(part, box);
+    
   for (int i = 0; i < nsteps; i++) {
-    std::cout << "Step " << i << " out of "<< nsteps << std::endl;
     if (i % dump->nfreq == 0) {
-      dump->write(i, part, box);
+	dump->write(i, part, box);
     }
     if (i % thermo->nfreq == 0) {
-      thermo->write(i, part);
+	thermo->write(i, part);
     }
-
-    cells->update(part, box);
     integ->first_step(part);
     forces_all();
     integ->final_step(part);
+    cells->update(part, box);
+    
   }
 }
 
