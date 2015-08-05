@@ -18,6 +18,6 @@ double Potential::dphi(double dr, double *pe) {
   double invdr2 = invdr * invdr;
   double invdr6 = invdr2 * invdr2 * invdr2;
   double invdr12 = invdr6 * invdr6;
-  *pe = 4.0 * (invdr12 - invdr6);
+  *pe = 4.0 * (invdr12 - invdr6) - phicut;
   return 24.0 * invdr2 * (2.0 * invdr12 - invdr6);
 }

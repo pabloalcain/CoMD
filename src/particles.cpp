@@ -29,7 +29,7 @@ Particles::Particles(int nprot, int nneut, Box box){
     }
 
     for (int i = 0; i < 3*N; i++){
-      v[i] = 0.0;
+	v[i] = 0.5*(double)rand()/RAND_MAX;
     }
     
     /* We set the first as neutrons, the last as protons */
