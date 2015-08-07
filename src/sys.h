@@ -22,6 +22,8 @@ class System {
   CellList *cells;
   Dump *dump;
   Thermo *thermo;
+
+  void comd();
   
  public:
   System(Box *_box, Particles *_part, Potential *_pot,
