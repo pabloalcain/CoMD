@@ -12,7 +12,7 @@ System::System(Box *_box, Particles *_part, Potential *_pot,
 }
 
 void System::forces() {
-  double *x;
+  double x[3];
   double dx[3];
   double dr, dphi, pe;
 
@@ -27,7 +27,9 @@ void System::forces() {
     Cell *cell = cells->list + k;
     for (int i = 0; i < cell->natoms - 1; i++) {
       int ii = cell->idxlist[i];
-      x = part->x + 3*ii;
+      x[0] = part->x[3*ii+0];
+      x[1] = part->x[3*ii+1];
+      x[2] = part->x[3*ii+2];
       
       for (int j = i+1; j < cell->natoms; j++) {
 	int jj = cell->idxlist[j];
@@ -55,7 +57,9 @@ void System::forces() {
     Cell *c2 = cells->list + cells->pairs[2*k+1];
     for (int i = 0; i < c1->natoms; i++) {
       int ii = c1->idxlist[i];
-      x = part->x + 3*ii;
+      x[0] = part->x[3*ii+0];
+      x[1] = part->x[3*ii+1];
+      x[2] = part->x[3*ii+2];
       
       for (int j = 0; j < c2->natoms; j++) {
 	int jj = c2->idxlist[j];
@@ -76,7 +80,7 @@ void System::forces() {
       }
     }
   }
-}  
+}
 
 void System::forces_all() {
   double *x;
