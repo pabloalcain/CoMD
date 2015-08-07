@@ -11,9 +11,7 @@ System::System(Box *_box, Particles *_part, Potential *_pot,
   cells = new CellList(pot->rcut, part, pot, box);
 }
 
-void System::comd() {
 
-}
 
 void System::forces() {
   double x[3];

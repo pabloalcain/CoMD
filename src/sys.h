@@ -23,8 +23,6 @@ class System {
   Dump *dump;
   Thermo *thermo;
 
-  void comd();
-  
  public:
   System(Box *_box, Particles *_part, Potential *_pot,
 	 Integrator *_integ, Dump *_dump, Thermo *_thermo);

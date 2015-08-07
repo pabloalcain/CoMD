@@ -7,6 +7,7 @@ class Box
   friend class Particles;
   friend class CellList;
   friend class Dump;
+  friend class CoMD;
   double size[3];
   
  public:
