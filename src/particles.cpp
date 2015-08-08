@@ -49,7 +49,7 @@ Particles::Particles(int nprot, int nneut, Box box){
  
 
     /* Dummy values */
-    sigma_r = 1.0;
-    sigma_p = 1.0;
+    sigma_r = 4.0;
+    sigma_p = 4.0;
     mass = 1.0;
 }

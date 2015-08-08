@@ -22,6 +22,7 @@ class CoMD
 
   */
 
+  friend class Dump;
   double *f;
   double gamma(double u);
   double sigma_r, sigma_p;

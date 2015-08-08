@@ -10,7 +10,7 @@ System::System(Box *_box, Particles *_part, Potential *_pot,
   thermo = _thermo;
   cells = new CellList(pot->rcut, part, pot, box);
   units = new Units();
-  comd = new CoMD(100, part, units);
+  comd = new CoMD(1, part, units);
 }
 
 
@@ -127,16 +127,20 @@ void System::run(int nsteps) {
   forces();
     
   for (int i = 0; i < nsteps; i++) {
+    cells->update(part, box);
+    if (i % comd->ncheck == 0) {
+      comd->check_occupation(part, cells, box);
+    }
     if (i % dump->nfreq == 0) {
-	dump->write(i, part, box);
+      dump->write(i, part, comd, box);
     }
     if (i % thermo->nfreq == 0) {
 	thermo->write(i, part);
     }
+
     integ->first_step(part);
     forces();
     integ->final_step(part);
-    cells->update(part, box);
     
   }
 }

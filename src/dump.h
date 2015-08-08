@@ -5,6 +5,7 @@
 #include <string>
 
 #include "particles.h"
+#include "comd.h"
 #include "box.h"
 
 class Dump
@@ -14,13 +15,13 @@ class Dump
 
   std::ofstream *dumpfile;
   void write_header(int step, Particles *part, Box *box);
-  void write_part(Particles *part);
+  void write_part(Particles *part, CoMD *comd);
   
  public:
   int nfreq; /* How often we write the dump */
   Dump(int nfreq, std::ofstream *fname);
   ~Dump();
-  void write(int step, Particles *part, Box *box);
+  void write(int step, Particles *part, CoMD *comd, Box *box);
 };
 
 #endif

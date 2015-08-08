@@ -1,4 +1,5 @@
 #include "comd.h"
+#include <iostream>
 
 CoMD::CoMD(int _ncheck, Particles *part, Units *units){
   ncheck = _ncheck;
@@ -13,12 +14,12 @@ void CoMD::create_lut(int npoints, double sr, double sp, double hbar) {
 
   lut_gamma = (double *) malloc(sizeof(double) * (npoints));
   lut_rmax = 3/sqrt(2);
-  lut_rmax = 1.0/lut_invrmax;
+  lut_invrmax = 1.0/lut_rmax;
   lut_npoints = npoints;
   for (int i = 0; i < npoints; i++) {
     u = (double)i * lut_rmax/npoints;
     du = sqrt(2*M_PI*hbar/(2 * sr * sp));
-    lut_gamma[i] = erf(u + du) - erf(u - du);
+    lut_gamma[i] = (erf(u + du) - erf(u - du))/2;
   }
 }
 
@@ -50,7 +51,6 @@ void CoMD::check_occupation(Particles *part, CellList *cells, Box *box) {
 	int jj = cell->idxlist[j];
 	if (part->spin[ii] != part->spin[jj]) continue;
 	if (part->isospin[ii] != part->isospin[jj]) continue;
-	
 	sqp = 0.0;
 	sqx = 0.0;
 	for (int l = 0; l < 3; l++) {
@@ -65,10 +65,11 @@ void CoMD::check_occupation(Particles *part, CellList *cells, Box *box) {
 	double u = sqp/(3 * part->sigma_p * 3 * part->sigma_p);
 	u += sqx/(3 * part->sigma_r * 3 * part->sigma_r);
 	if (u < 1) {
-	  int occ = 1.0;
+	  double occ = 1.0;
 	  for (int l = 0; l < 3; l++) {
 	    occ *= gamma(dp[l]/(sqrt(2)* part->sigma_p));
 	    occ *= gamma(dx[l]/(sqrt(2)* part->sigma_r));
+	  
 	  }
 	  f[ii] += occ;	
 	  f[jj] += occ;
