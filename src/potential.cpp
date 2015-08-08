@@ -1,5 +1,5 @@
 #include "potential.h"
-#include <iostream>
+
 Potential::Potential() {
   /* Dummy values so far */
   t0 = 1.0;

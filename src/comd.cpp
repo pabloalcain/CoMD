@@ -1,34 +1,31 @@
 #include "comd.h"
 
-CoMD::CoMD(int _ncheck, Particles *part){
+CoMD::CoMD(int _ncheck, Particles *part, Units *units){
   ncheck = _ncheck;
   f = (double *) malloc(sizeof(double) * part->N);
   for (int i = 0; i < part->N; i++)
     f[i] = 0.0;
-  create_lut(1000);
+  create_lut(1000, part->sigma_r, part->sigma_p, units->hbar);
 }
 
-void CoMD::create_lut(int npoints) {
-  lut_gamma = (double *) malloc(sizeof(double) * npoints);
+void CoMD::create_lut(int npoints, double sr, double sp, double hbar) {
+  double u, du;
+
+  lut_gamma = (double *) malloc(sizeof(double) * (npoints));
   lut_rmax = 3/sqrt(2);
   lut_rmax = 1.0/lut_invrmax;
   lut_npoints = npoints;
   for (int i = 0; i < npoints; i++) {
-    double r = (double)i * lut_rmax/npoints;
-    lut_gamma[i] = 0.0*r;
-    /* lut_gamma[i] = erf(u... */
+    u = (double)i * lut_rmax/npoints;
+    du = sqrt(2*M_PI*hbar/(2 * sr * sp));
+    lut_gamma[i] = erf(u + du) - erf(u - du);
   }
 }
 
 double CoMD::gamma(double u) {
   /* This gamma function comes from the integration of the f given in
      the paper */
-
   int idx = (int) (lut_npoints * u * lut_invrmax);
-
-  // erf(u + sqrt(h/(2 * sigma_r * sigma_p))) -
-  // erf(u - sqrt(h/(2 * sigma_r * sigma_p)))
-  
   return lut_gamma[idx];
 }
 
@@ -65,13 +62,13 @@ void CoMD::check_occupation(Particles *part, CellList *cells, Box *box) {
 
 	/* We check whether the particles are inside the 3sigma
 	   ellipsoid */
-	double u = sqp/(3 * sigma_p * 3 * sigma_p);
-	u += sqx/(3 * sigma_r * 3 * sigma_r);
+	double u = sqp/(3 * part->sigma_p * 3 * part->sigma_p);
+	u += sqx/(3 * part->sigma_r * 3 * part->sigma_r);
 	if (u < 1) {
 	  int occ = 1.0;
 	  for (int l = 0; l < 3; l++) {
-	    occ *= gamma(dp[l]/(sqrt(2)* sigma_p));
-	    occ *= gamma(dx[l]/(sqrt(2)* sigma_r));
+	    occ *= gamma(dp[l]/(sqrt(2)* part->sigma_p));
+	    occ *= gamma(dx[l]/(sqrt(2)* part->sigma_r));
 	  }
 	  f[ii] += occ;	
 	  f[jj] += occ;
@@ -109,13 +106,13 @@ void CoMD::check_occupation(Particles *part, CellList *cells, Box *box) {
 
 	/* We check whether the particles are inside the 3sigma
 	   ellipsoid */
-	double u = sqp/(3 * sigma_p * 3 * sigma_p);
-	u += sqx/(3 * sigma_r * 3 * sigma_r);
+	double u = sqp/(3 * part->sigma_p * 3 * part->sigma_p);
+	u += sqx/(3 * part->sigma_r * 3 * part->sigma_r);
 	if (u < 1) {
 	  int occ = 1.0;
 	  for (int l = 0; l < 3; l++) {
-	    occ *= gamma(dp[l]/(sqrt(2)* sigma_p));
-	    occ *= gamma(dx[l]/(sqrt(2)* sigma_r));
+	    occ *= gamma(dp[l]/(sqrt(2)* part->sigma_p));
+	    occ *= gamma(dx[l]/(sqrt(2)* part->sigma_r));
 	  }
 	  f[ii] += occ;	
 	  f[jj] += occ;

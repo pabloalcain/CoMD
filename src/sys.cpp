@@ -9,6 +9,8 @@ System::System(Box *_box, Particles *_part, Potential *_pot,
   dump = _dump;
   thermo = _thermo;
   cells = new CellList(pot->rcut, part, pot, box);
+  units = new Units();
+  comd = new CoMD(100, part, units);
 }
 
 

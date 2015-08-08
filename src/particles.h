@@ -21,7 +21,7 @@ class Particles
     int N;
     double *x, *v, *f;
     bool *isospin, *spin;
-    double sig_r, sig_p;
+    double sigma_r, sigma_p;
     double mass;
 
 public:

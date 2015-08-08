@@ -9,9 +9,11 @@
 #include "potential.h"
 #include "integrator.h"
 #include "cell.h"
+#include "comd.h"
 #include "box.h"
 #include "dump.h"
 #include "thermo.h"
+#include "units.h"
 
 class System {
   /* This is the basic system structure */
@@ -22,6 +24,8 @@ class System {
   CellList *cells;
   Dump *dump;
   Thermo *thermo;
+  Units *units;
+  CoMD *comd;
 
  public:
   System(Box *_box, Particles *_part, Potential *_pot,

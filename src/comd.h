@@ -1,8 +1,12 @@
 #ifndef COMD_H
 #define COMD_H
+
 #include "cell.h"
 #include "particles.h"
 #include "box.h"
+#include "units.h"
+
+#include <cmath>
 
 class CoMD
 {
@@ -21,14 +25,14 @@ class CoMD
   double *f;
   double gamma(double u);
   double sigma_r, sigma_p;
-  void create_lut(int npoints);
+  void create_lut(int npoints, double sigma_r, double sigma_p, double hbar);
   double *lut_gamma;
   double lut_rmax, lut_invrmax, lut_npoints;
   
  public:
   int ncheck;
   
-  CoMD(int ncheck, Particles *part);
+  CoMD(int ncheck, Particles *part, Units *units);
   void check_occupation(Particles *part, CellList *cells, Box *box);
   void change_momentum(Particles *part, CellList *cells);
 };
