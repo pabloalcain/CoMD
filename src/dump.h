@@ -15,13 +15,13 @@ class Dump
 
   std::ofstream *dumpfile;
   void write_header(int step, Particles *part, Box *box);
-  void write_part(Particles *part, CoMD *comd);
+  void write_part(Particles *part);
   
  public:
   int nfreq; /* How often we write the dump */
   Dump(int nfreq, std::ofstream *fname);
   ~Dump();
-  void write(int step, Particles *part, CoMD *comd, Box *box);
+  void write(int step, Particles *part, Box *box);
 };
 
 #endif

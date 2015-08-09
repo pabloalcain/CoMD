@@ -9,9 +9,9 @@ Dump::~Dump() {
   dumpfile->close();
 }
 
-void Dump::write(int step, Particles *part, CoMD *comd, Box *box) {
+void Dump::write(int step, Particles *part, Box *box) {
   write_header(step, part, box);
-  write_part(part, comd);
+  write_part(part);
 }
 
 void Dump::write_header(int step, Particles *part, Box *box) {
@@ -26,7 +26,7 @@ void Dump::write_header(int step, Particles *part, Box *box) {
   *dumpfile << "ITEM: ATOMS id type x y z vx vy vz occ" << std::endl;
 }
 
-void Dump::write_part(Particles *part, CoMD *comd) {
+void Dump::write_part(Particles *part) {
   for (int i = 0; i < part->N; i++) {
     int is = part->isospin[i]?2:1;
     *dumpfile << i;
@@ -35,7 +35,7 @@ void Dump::write_part(Particles *part, CoMD *comd) {
       *dumpfile << " " << part->x[3*i + l]; 
     for (int l = 0; l < 3; l++) 
       *dumpfile << " " << part->v[3*i + l];
-    *dumpfile << " " << comd->f[i];
+    *dumpfile << " " << part->occ[i];
     *dumpfile << std::endl;
   }
 }
