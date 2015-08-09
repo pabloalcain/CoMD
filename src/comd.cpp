@@ -1,11 +1,7 @@
 #include "comd.h"
-#include <iostream>
 
 CoMD::CoMD(int _ncheck, Particles *part, Units *units){
   ncheck = _ncheck;
-  f = (double *) malloc(sizeof(double) * part->N);
-  for (int i = 0; i < part->N; i++)
-    f[i] = 0.0;
   create_lut(1000, part->sigma_r, part->sigma_p, units->hbar);
 }
 
@@ -36,7 +32,7 @@ void CoMD::check_occupation(Particles *part, CellList *cells, Box *box) {
   double x[3], dx[3], sqx;
   
   for (int i = 0; i < part->N; i++)
-    f[i] = 0.0;
+    part->occ[i] = lut_gamma[0];
 
   /* Interaction of particles in the same cell */
   for (int k = 0; k < cells->ncells; k++) {
@@ -67,12 +63,11 @@ void CoMD::check_occupation(Particles *part, CellList *cells, Box *box) {
 	if (u < 1) {
 	  double occ = 1.0;
 	  for (int l = 0; l < 3; l++) {
-	    occ *= gamma(dp[l]/(sqrt(2)* part->sigma_p));
-	    occ *= gamma(dx[l]/(sqrt(2)* part->sigma_r));
-	  
+	    occ *= gamma(fabs(dp[l])/(sqrt(2)* part->sigma_p));
+	    occ *= gamma(fabs(dx[l])/(sqrt(2)* part->sigma_r));
 	  }
-	  f[ii] += occ;	
-	  f[jj] += occ;
+	  part->occ[ii] += occ;	
+	  part->occ[jj] += occ;
 	}
       }
     }
@@ -112,11 +107,11 @@ void CoMD::check_occupation(Particles *part, CellList *cells, Box *box) {
 	if (u < 1) {
 	  int occ = 1.0;
 	  for (int l = 0; l < 3; l++) {
-	    occ *= gamma(dp[l]/(sqrt(2)* part->sigma_p));
-	    occ *= gamma(dx[l]/(sqrt(2)* part->sigma_r));
+	    occ *= gamma(fabs(dp[l])/(sqrt(2)* part->sigma_p));
+	    occ *= gamma(fabs(dx[l])/(sqrt(2)* part->sigma_r));
 	  }
-	  f[ii] += occ;	
-	  f[jj] += occ;
+	  part->occ[ii] += occ;	
+	  part->occ[jj] += occ;
 	}
       }
     }

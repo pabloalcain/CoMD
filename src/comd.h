@@ -22,8 +22,6 @@ class CoMD
 
   */
 
-  friend class Dump;
-  double *f;
   double gamma(double u);
   double sigma_r, sigma_p;
   void create_lut(int npoints, double sigma_r, double sigma_p, double hbar);

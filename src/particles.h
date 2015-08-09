@@ -19,7 +19,7 @@ class Particles
     friend class Dump;
     friend class CoMD;
     int N;
-    double *x, *v, *f;
+    double *x, *v, *f, *occ;
     bool *isospin, *spin;
     double sigma_r, sigma_p;
     double mass;

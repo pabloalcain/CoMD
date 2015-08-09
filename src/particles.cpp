@@ -1,14 +1,17 @@
 #include "particles.h"
-
+#include <iostream>
 Particles::Particles(int nprot, int nneut, Box box){
     N = nprot + nneut;
     x = (double *) malloc(3 * N * sizeof(double));
     v = (double *) malloc(3 * N * sizeof(double));
     f = (double *) malloc(3 * N * sizeof(double));
+    occ = (double *) malloc(N * sizeof(double));
     isospin = (bool *) malloc(N * sizeof(char));
     spin = (bool *) malloc(N * sizeof(char));
     
-    int L = (int) ceil(pow(N, 1.0/3.0));
+    
+    int L = cbrt(N);
+    if (N != L * L * L) L++;
     double dx = box.size[0]/L;
     double dy = box.size[1]/L;
     double dz = box.size[2]/L;
@@ -31,6 +34,10 @@ Particles::Particles(int nprot, int nneut, Box box){
     for (int i = 0; i < 3*N; i++){
 	v[i] = 0.5*(double)rand()/RAND_MAX;
     }
+
+    for (int i = 0; i < N; i++)
+      occ[i] = 0.0;
+
     
     /* We set the first as neutrons, the last as protons */
     for (int i = 0; i < nneut; i++)
@@ -49,7 +56,7 @@ Particles::Particles(int nprot, int nneut, Box box){
  
 
     /* Dummy values */
-    sigma_r = 4.0;
-    sigma_p = 4.0;
+    sigma_r = 1.0;
+    sigma_p = 6.28;
     mass = 1.0;
 }
