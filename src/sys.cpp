@@ -11,9 +11,42 @@ System::System(Box *_box, Particles *_part, Potential *_pot,
   cells = new CellList(pot->rcut, part, pot, box);
   units = new Units();
   comd = new CoMD(1, part, units);
+  neighbor = new Neighbor(part);
 }
 
 
+void System::forces_neigh() {
+  double x[3];
+  double dx[3];
+  double dr, dphi, pe;
+
+  part->pe = 0;
+  for (int ii = 0; ii < 3*part->N; ii++)
+    part->f[ii] = 0;
+  
+  for (int ii = 0; ii < part->N; ii++) {
+    x[0] = part->x[3*ii+0];
+    x[1] = part->x[3*ii+1];
+    x[2] = part->x[3*ii+2];
+    for (int j = 0; j< neighbor->num[ii]; j++) {
+      int jj  = neighbor->list[ii*part->N + j];
+      for (int l = 0; l < 3; l++) {
+	dx[l] = box->pbc(x[l] - part->x[3*jj + l], l);
+      }
+      dr = dx[0] * dx[0] + dx[1] * dx[1] + dx[2] * dx[2];
+      if (dr < pot->rcut * pot->rcut) {
+	dr = sqrt(dr);
+	dphi = pot->dphi(dr, &pe);
+	part->pe += pe;
+	for (int l = 0; l < 3; l++) {
+	  /* Newton's 3rd law */
+	  part->f[3*ii + l] += dphi * dx[l];
+	  part->f[3*jj + l] -= dphi * dx[l];
+	}
+      }
+    }
+  }
+}
 
 void System::forces() {
   double x[3];
@@ -124,22 +157,24 @@ void System::forces_all() {
 
 void System::run(int nsteps) {
   cells->update(part, box);
-  forces();
+  neighbor->update(cells, part, pot, box);
+  forces_neigh();
     
   for (int i = 0; i < nsteps; i++) {
-    cells->update(part, box);
     if (i % comd->ncheck == 0) {
       comd->check_occupation(part, cells, box);
     }
     if (i % dump->nfreq == 0) {
-      dump->write(i, part, comd, box);
+      dump->write(i, part, box);
     }
     if (i % thermo->nfreq == 0) {
-	thermo->write(i, part);
+      thermo->write(i, part);
     }
 
     integ->first_step(part);
-    forces();
+    cells->update(part, box);
+    neighbor->update(cells, part, pot, box);
+    forces_neigh();
     integ->final_step(part);
     
   }

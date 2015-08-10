@@ -18,6 +18,7 @@ class Particles
     friend class CellList;
     friend class Dump;
     friend class CoMD;
+    friend class Neighbor;
     int N;
     double *x, *v, *f, *occ;
     bool *isospin, *spin;

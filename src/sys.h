@@ -11,6 +11,7 @@
 #include "cell.h"
 #include "comd.h"
 #include "box.h"
+#include "neighbor.h"
 #include "dump.h"
 #include "thermo.h"
 #include "units.h"
@@ -26,12 +27,14 @@ class System {
   Thermo *thermo;
   Units *units;
   CoMD *comd;
+  Neighbor *neighbor;
 
  public:
   System(Box *_box, Particles *_part, Potential *_pot,
 	 Integrator *_integ, Dump *_dump, Thermo *_thermo);
   void forces();
   void forces_all();
+  void forces_neigh();
   void run(int nsteps);
 };
 
