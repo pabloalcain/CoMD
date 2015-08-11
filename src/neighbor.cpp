@@ -1,8 +1,11 @@
 #include "neighbor.h"
 
-Neighbor::Neighbor(Particles *part) {
+Neighbor::Neighbor(Particles *part, Potential *pot, double skin, int _nfreq) {
   list = (int *) malloc(part->N * part->N * sizeof(int));
   num = (int *) malloc(part->N * sizeof(int));
+  cutoff = pot->rcut > 3 * part->sigma_r? pot->rcut : 3 * part->sigma_r;
+  cutoff += skin;
+  nfreq = _nfreq;
 }
 
 void Neighbor::update(CellList *cells, Particles *part, Potential *pot, Box *box) {
@@ -11,6 +14,8 @@ void Neighbor::update(CellList *cells, Particles *part, Potential *pot, Box *box
   double dr;
   int n;
 
+  cells->update(part, box);
+  
   for (int i = 0; i < part->N; i++) num[i] = 0;
   for (int k = 0; k < cells->ncells; k++) {
     Cell *cell = cells->list + k;
@@ -26,7 +31,7 @@ void Neighbor::update(CellList *cells, Particles *part, Potential *pot, Box *box
 	dr = 0;
 	for (int l = 0; l < 3; l++)
 	  dr += box->pbc(x[l] - part->x[3*jj + l], l) * box->pbc(x[l] - part->x[3*jj + l], l);
-	if (dr < pot->rcut * pot->rcut){
+	if (dr < cutoff * cutoff){
 	  list[ii*part->N + n] = jj;
 	  n++;
 	}

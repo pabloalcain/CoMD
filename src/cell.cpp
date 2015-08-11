@@ -12,7 +12,7 @@ void Cell::add_atom(int idx) {
   natoms++;
 }
 
-CellList::CellList(double length, Particles *part, Potential *pot, Box *box){
+CellList::CellList(double length, Particles *part, double cutoff, Box *box){
   /* length is the (max) size of the cell. It will be slightly changed
      to fit an integer number of cells in the simulation box. N is the
      total number of particles.
@@ -22,8 +22,6 @@ CellList::CellList(double length, Particles *part, Potential *pot, Box *box){
   
   /* Create the cell list */
 
-  double cutoff = pot->rcut > 3*part->sigma_r? pot->rcut: 3*part->sigma_r;
-  
   ncells = 1;
   for (int i=0; i<3; i++) {
     ngrid[i]  = floor(box->size[i] / length);

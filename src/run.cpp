@@ -3,9 +3,9 @@
 int main(int argc, char* argv[]) {
     int nsteps;
     Box box = Box(20.0);
-    Particles particles = Particles(400, 400, box);
+    Particles particles = Particles(20, 20, box);
     Potential potential = Potential();
-    Integrator integrator = Integrator(0.0005);
+    Integrator integrator = Integrator(0.0005, 100);
 
     std::ofstream file;
     file.open("dump.lammpstrj");
@@ -13,7 +13,7 @@ int main(int argc, char* argv[]) {
 
     std::ofstream file2;
     file2.open("thermo.out");
-    Thermo thermo = Thermo(100, &file2);
+    Thermo thermo = Thermo(1, &file2);
     
     if (argc != 2) {
 	std::cerr << "usage: " << argv[0] << " nsteps" << std::endl;

@@ -1,7 +1,8 @@
 #include "integrator.h"
 
-Integrator::Integrator(double _dt) {
+Integrator::Integrator(double _dt, int _nfreq) {
     dt = _dt;
+    nfreq = _nfreq;
 }
 
 void Integrator::first_step(Particles *part) {
@@ -22,4 +23,11 @@ void Integrator::final_step(Particles *part) {
 	part->ke += (part->v[i] * part->v[i]);
     }
     part->ke *= 0.5 * part->mass;
+}
+
+void Integrator::scale(Particles *part, double alpha) {
+
+  for (int i = 0; i < 3*part->N; i++) {
+    part->v[i] *= alpha;
+  }
 }

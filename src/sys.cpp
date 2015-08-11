@@ -8,10 +8,10 @@ System::System(Box *_box, Particles *_part, Potential *_pot,
   integ = _integ;
   dump = _dump;
   thermo = _thermo;
-  cells = new CellList(pot->rcut, part, pot, box);
   units = new Units();
   comd = new CoMD(1, part, units);
-  neighbor = new Neighbor(part);
+  neighbor = new Neighbor(part, pot, 5.0, 1);
+  cells = new CellList(neighbor->cutoff, part, neighbor->cutoff, box);
 }
 
 
@@ -153,8 +153,6 @@ void System::forces_all() {
   }
 }
 
-
-
 void System::run(int nsteps) {
   cells->update(part, box);
   neighbor->update(cells, part, pot, box);
@@ -171,11 +169,16 @@ void System::run(int nsteps) {
       thermo->write(i, part);
     }
 
+    
     integ->first_step(part);
-    cells->update(part, box);
-    neighbor->update(cells, part, pot, box);
+    if (i % neighbor->nfreq == 0) {
+      neighbor->update(cells, part, pot, box);
+    }
     forces_neigh();
     integ->final_step(part);
+
+    if (i % integ->nfreq == 0)
+      integ->scale(part, 0.99);
     
   }
 }

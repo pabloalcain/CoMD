@@ -1,13 +1,15 @@
 #ifndef CELL_H
 #define CELL_H
 
+#include <iostream>
+#include <math.h>
+#include <stdlib.h>
+
 #include "box.h"
 #include "particles.h"
 #include "potential.h"
 
-#include <iostream>
-#include <math.h>
-#include <stdlib.h>
+
 class Cell
 {
   friend class CellList;
@@ -42,7 +44,7 @@ class CellList
   int *pairs; /* Pairs of cells that are within cutoff distance */
   
  public:
-  CellList(double length, Particles *part, Potential *pot, Box *box);
+  CellList(double length, Particles *part, double cutoff, Box *box);
   void update(Particles *part, Box *box);
 };
    
