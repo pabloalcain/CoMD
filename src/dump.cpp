@@ -23,14 +23,16 @@ void Dump::write_header(int step, Particles *part, Box *box) {
   *dumpfile << -box->size[0]/2 << " " << box->size[0]/2 << std::endl;
   *dumpfile << -box->size[1]/2 << " " << box->size[1]/2 << std::endl;
   *dumpfile << -box->size[2]/2 << " " << box->size[2]/2 << std::endl;
-  *dumpfile << "ITEM: ATOMS id type x y z vx vy vz occ" << std::endl;
+  *dumpfile << "ITEM: ATOMS id type spin x y z vx vy vz occ" << std::endl;
 }
 
 void Dump::write_part(Particles *part) {
   for (int i = 0; i < part->N; i++) {
     int is = part->isospin[i]?2:1;
+    int s = part->spin[i]?1:-1;
     *dumpfile << i;
     *dumpfile << " " << is;
+    *dumpfile << " " << s;
     for (int l = 0; l < 3; l++) 
       *dumpfile << " " << part->x[3*i + l]; 
     for (int l = 0; l < 3; l++) 

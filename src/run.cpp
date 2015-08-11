@@ -2,8 +2,8 @@
 
 int main(int argc, char* argv[]) {
     int nsteps;
-    Box *box = new Box(20.0);
-    Particles *particles = new Particles(20, 20, *box);
+    Box *box = new Box(10.0);
+    Particles *particles = new Particles(20, 20, box);
     Potential *potential = new Potential();
     Integrator *integrator = new Cooldown(0.001, 0.99, 100);
 
