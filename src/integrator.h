@@ -5,13 +5,23 @@
 
 class Integrator {
     /* This is a verlet integrator */
+protected:
   friend class System;
   double dt;
-  int nfreq;
- public:
-  Integrator(double _dt, int nfreq);
+  int nstep;
+public:
+  Integrator(double _dt);
   void first_step(Particles *part); 
-  void final_step(Particles *part);
-  void scale(Particles *part, double alpha);
-};       
+  virtual void final_step(Particles *part);
+  void kinetic(Particles *part);
+};
+
+class Cooldown: public Integrator {
+  double alpha;
+  int nfreq;
+
+public:
+  Cooldown(double _dt, double _alpha, int _nfreq);
+  virtual void final_step(Particles *part);
+};
 #endif

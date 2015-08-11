@@ -2,8 +2,8 @@
 
 #### Global
 
-- [ ] Create neighbour lists instead of looping through cells
-- [ ] Add a thermostat
+- [x] Create neighbour lists instead of looping through cells (should create a "multi" style)
+- [x] Add a thermostat (a silly one that rescales velocities but keeps u-canonical ensemble)
 - [ ] Parallelize
 - [ ] Read/write restart files
 - [ ] Read dump files

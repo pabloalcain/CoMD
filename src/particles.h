@@ -14,6 +14,7 @@ class Particles
        The isospin is false for neutrons, true for protons.
     */
     friend class Integrator;
+    friend class Cooldown;
     friend class System;
     friend class CellList;
     friend class Dump;
