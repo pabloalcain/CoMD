@@ -11,7 +11,7 @@ class Neighbor
   friend class CellList;
   int *list;
   int *num;
-  double cutoff;
+  double **cutoff, maxcutoff;
   int nfreq;
 
   public:

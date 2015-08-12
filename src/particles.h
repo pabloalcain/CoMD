@@ -26,8 +26,10 @@ class Particles
   friend class Dump;
   friend class CoMD;
   friend class Neighbor;
+  friend class Potential;
   
   int N;
+  int ntypes;
   double *x, *v, *f, *occ;
   bool *isospin, *spin;
   double sigma_r, sigma_p;

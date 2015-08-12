@@ -14,6 +14,7 @@ Particles::Particles(int nprot, int nneut, Box *box){
   /* isospin false = type 1 = neutron
      isospin true = type 2 = proton */
   N = nprot + nneut;
+  ntypes = 2;
   allocate();
     
   int L = cbrt(N);
