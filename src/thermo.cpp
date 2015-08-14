@@ -15,7 +15,6 @@ void Thermo::write(int step, Particles *part) {
 	      << part->pe << " " << part->ke + part->pe << std::endl;
   std::cout << step << " " << part->ke*1.5 << " " << part->ke << " "
 	      << part->pe << " " << part->ke + part->pe << std::endl;
-
 }
 
 void Thermo::write_header() {

@@ -1,8 +1,9 @@
 #include "potential.h"
 
 Potential::Potential(Particles *part) {
-  /* Dummy values so far. The default constructor has 2 types of particles and sets
-   the values as in CoMD. We pass the particles to also know the size in q-space. */
+  /* The default constructor has 2 types of particles and sets the
+   values as in CoMD. We pass the particles to also know the size in
+   q-space. */
 
   int n = part->ntypes;
 
@@ -26,10 +27,10 @@ Potential::Potential(Particles *part) {
     
   }
 
-  rcut[1][1] = 2.5;
-  rcut[2][1] = 2.5;
-  rcut[1][2] = 2.5;
-  rcut[2][2] = 2.5;
+  rcut[1][1] = 5.0;
+  rcut[2][1] = 5.0;
+  rcut[1][2] = 5.0;
+  rcut[2][2] = 5.0;
 
   phicut[1][1] = 0.0;
   phicut[2][1] = 0.0;
@@ -54,20 +55,25 @@ double Potential::dphi(double r, int t1, int t2, double *pe) {
   double three = t3 * u/(u +1) * pow(rho(r)/r0, u)/(sigma_r*sigma_r);
   double sym = asym/4 * (rho(r)/r0) * 1.0/(sigma_r*sigma_r);
   double surf = cs/(4*pow(sigma_r,4)) * (rho(r)/r0) * (r*r/(2*sigma_r*sigma_r) - 3);
+  double coul = -e*e/(r*r) * ((M_PI * sigma_r * sigma_r * 8) * rho(r) - erf(r/(2*sigma_r))/r);
   
   
   double evol = t0/2 * rho(r)/r0;
   double ethree = 2*t3/(u +1) * pow(rho(r)/r0, u);
   double esym = asym/2 * rho(r)/r0;
   double esurf = cs/(4*pow(sigma_r,4)) * rho(r)/r0 * (r*r - 2*sigma_r * sigma_r);
+  double ecoul = e*e/r * erf(r/(2*sigma_r));
 
 
 
-  if (t1 == t2) {
+  if (t1 == 1 and t2 == 1) {
     *pe = evol + ethree + esym + esurf;
     return vol + three + sym + surf;
   }
-  else {
+  else if (t1 == 2 and t2 == 2) {
+    *pe = evol + ethree + esym + esurf + ecoul;
+    return vol + three + sym + surf + coul;
+  } else {
     *pe = evol + ethree - esym + esurf;
     return vol + three - sym + surf;
   }

@@ -75,7 +75,7 @@ Particles::Particles(int nprot, int nneut, Box *box){
 
   /* Dummy values */
   sigma_r = 1.3;
-  sigma_p = 6.28;
+  sigma_p = 0.47;
   mass = 938.0;
 }
 
@@ -125,6 +125,6 @@ Particles::Particles(const std::string& fname, Box *box){
   }
   /* Dummy values */
   sigma_r = 1.3;
-  sigma_p = 6.28;
+  sigma_p = 0.47;
   mass = 938.0;
 }

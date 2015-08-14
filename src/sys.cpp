@@ -9,8 +9,9 @@ System::System(Box *_box, Particles *_part, Potential *_pot,
   dump = _dump;
   thermo = _thermo;
   units = new Units();
+  part->sigma_p *= units->hbar;
   comd = new CoMD(1, part, units);
-  neighbor = new Neighbor(part, pot, 5.0, 1);
+  neighbor = new Neighbor(part, pot, 10.0, 1000);
   cells = new CellList(neighbor->maxcutoff, part, neighbor->maxcutoff, box);
 }
 
