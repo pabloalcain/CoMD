@@ -16,7 +16,7 @@ Particles::Particles(int nprot, int nneut, Box *box){
   N = nprot + nneut;
   ntypes = 2;
   allocate();
-    
+   
   int L = cbrt(N);
   if (N != L * L * L) L++;
   double dx = box->size[0]/L;
@@ -37,9 +37,20 @@ Particles::Particles(int nprot, int nneut, Box *box){
       }
     }
   }
-
-  for (int i = 0; i < 3*N; i++){
-    v[i] = 0.5*(double)rand()/RAND_MAX;
+  double vcm[3];
+  for (int j = 0; j < 3; j++) vcm[j] = 0;
+  
+  for (int i = 0; i < N; i++) {
+    for (int j = 0; j < 3; j++) {
+      v[3*i+j] = 0.04*(double)rand()/RAND_MAX;
+      vcm[j] += v[3*i+j]/N;
+    }
+  }
+  
+  for (int i = 0; i < N; i++) {
+    for (int j = 0; j < 3; j++) {
+      v[3*i+j]-= vcm[j];
+    }
   }
 
   for (int i = 0; i < N; i++)
@@ -63,9 +74,9 @@ Particles::Particles(int nprot, int nneut, Box *box){
  
 
   /* Dummy values */
-  sigma_r = 1.0;
+  sigma_r = 1.3;
   sigma_p = 6.28;
-  mass = 1.0;
+  mass = 938.0;
 }
 
 Particles::Particles(const std::string& fname, Box *box){
@@ -75,6 +86,8 @@ Particles::Particles(const std::string& fname, Box *box){
   double number;
   int nline = 0;
   int maxlines = -1;
+  ntypes = 2;
+
   while(getline(dumpfile, line)) {
     nline++;
     if (nline == 4) {
@@ -110,5 +123,8 @@ Particles::Particles(const std::string& fname, Box *box){
     }
     if (nline == maxlines) break;
   }
-  mass = 1;
+  /* Dummy values */
+  sigma_r = 1.3;
+  sigma_p = 6.28;
+  mass = 938.0;
 }

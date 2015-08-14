@@ -19,6 +19,6 @@ void Thermo::write(int step, Particles *part) {
 }
 
 void Thermo::write_header() {
-  *thermofile << "Step Temperature Kinetic Potential Total" << std::endl;
-  std::cout << "Step Temperature Kinetic Potential Total" << std::endl;
+  *thermofile << "#Step Temperature Kinetic Potential Total" << std::endl;
+  std::cout << "#Step Temperature Kinetic Potential Total" << std::endl;
 }

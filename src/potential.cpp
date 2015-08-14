@@ -51,15 +51,17 @@ double Potential::dphi(double r, int t1, int t2, double *pe) {
   /* Need to work out the expression for dphi */
 
   double vol = t0/(4*r0) * rho(r)/(sigma_r*sigma_r);
-  double three = t3/((u +1)*pow(r0, u)) * pow(rho(r), u)/(sigma_r*sigma_r);
-  double sym = asym/(2*r0) * rho(r)/(sigma_r*sigma_r);
-  double surf = cs/(4*pow(sigma_r,4)*r0) * rho(r) * (r*r/(2*sigma_r*sigma_r) + 3);
-
-
+  double three = t3 * u/(u +1) * pow(rho(r)/r0, u)/(sigma_r*sigma_r);
+  double sym = asym/4 * (rho(r)/r0) * 1.0/(sigma_r*sigma_r);
+  double surf = cs/(4*pow(sigma_r,4)) * (rho(r)/r0) * (r*r/(2*sigma_r*sigma_r) - 3);
+  
+  
   double evol = t0/2 * rho(r)/r0;
-  double ethree = 2*t3/(u +1) * pow(rho(r/r0), u);
-  double esym = asym * rho(r)/r0;
+  double ethree = 2*t3/(u +1) * pow(rho(r)/r0, u);
+  double esym = asym/2 * rho(r)/r0;
   double esurf = cs/(4*pow(sigma_r,4)) * rho(r)/r0 * (r*r - 2*sigma_r * sigma_r);
+
+
 
   if (t1 == t2) {
     *pe = evol + ethree + esym + esurf;
@@ -82,3 +84,33 @@ double Potential::dphi(double r, int t1, int t2, double *pe) {
   // *pe = 4.0 * (invdr12 - invdr6) - phicut[t1][t2];
   // return 24.0 * invdr2 * (2.0 * invdr12 - invdr6);
 }
+
+void Potential::write_table(int npoints, double rmin, double rmax) {
+  std::ofstream file;
+  double r, etot;
+  file.open("table.dat");
+  file << "#r, Vvol, Vthree, Vsym, Vsurf, Fvol, Fthree, Fsym, Fsurf" << std::endl;
+  for (int i = 0; i < npoints; i++){
+    r = (rmax - rmin) * (float)(i + 1)/npoints + rmin;
+    double vol = t0/(4*r0) * rho(r)/(sigma_r*sigma_r);
+    double three = t3 * u/(u +1) * pow(rho(r)/r0, u)/(sigma_r*sigma_r);
+    double sym = asym/4 * (rho(r)/r0) * 1.0/(sigma_r*sigma_r);
+    double surf = cs/(4*pow(sigma_r,4)) * (rho(r)/r0) * (r*r/(2*sigma_r*sigma_r) - 3);
+
+    
+    double evol = t0/2 * rho(r)/r0;
+    double ethree = 2*t3/(u +1) * pow(rho(r)/r0, u);
+    double esym = asym/2 * rho(r)/r0;
+    double esurf = cs/(4*pow(sigma_r,4)) * rho(r)/r0 * (r*r - 2*sigma_r * sigma_r);
+
+
+    file << r << " ";
+    file << evol << " " << ethree << " " << esym << " " << esurf << " ";
+    file << r * vol << " " << r * three << " " << r * sym << " " << r * surf << std::endl;
+  }
+  return;
+}
+    
+    
+    
+    
