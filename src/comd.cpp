@@ -34,87 +34,38 @@ void CoMD::check_occupation(Particles *part, CellList *cells, Box *box) {
   for (int i = 0; i < part->N; i++)
     part->occ[i] = lut_gamma[0];
 
-  /* Interaction of particles in the same cell */
-  for (int k = 0; k < cells->ncells; k++) {
-    Cell *cell = cells->list + k;
-    for (int i = 0; i < cell->natoms - 1; i++) {
-      int ii = cell->idxlist[i];
-      for (int l=0; l < 3; l++) {
-	p[l] = part->v[3*ii+l];
-	x[l] = part->x[3*ii+l];
-      }
-      for (int j = i+1; j < cell->natoms; j++) {
-	int jj = cell->idxlist[j];
-	if (part->spin[ii] != part->spin[jj]) continue;
-	if (part->isospin[ii] != part->isospin[jj]) continue;
-	sqp = 0.0;
-	sqx = 0.0;
-	for (int l = 0; l < 3; l++) {
-	  dp[l] = part->mass * (p[l] - part->v[3*jj + l]);
-	  dx[l] = box->pbc(x[l] - part->x[3*jj + l], l);
-	  sqp += dp[l] * dp[l];
-	  sqx += dx[l] * dx[l];
-	}
-
-	/* We check whether the particles are inside the 3sigma
-	   ellipsoid */
-	double u = sqp/(3 * part->sigma_p * 3 * part->sigma_p);
-	u += sqx/(3 * part->sigma_r * 3 * part->sigma_r);
-	if (u < 1) {
-	  double occ = 1.0;
-	  for (int l = 0; l < 3; l++) {
-	    occ *= gamma(fabs(dp[l])/(sqrt(2)* part->sigma_p));
-	    occ *= gamma(fabs(dx[l])/(sqrt(2)* part->sigma_r));
-	  }
-	  part->occ[ii] += occ;	
-	  part->occ[jj] += occ;
-	}
-      }
-    }
-  }
-  
-  /* Interaction of particles in different cells */
-  for (int k = 0; k < cells->npairs; k++) {
-    Cell *c1 = cells->list + cells->pairs[2*k+0];
-    Cell *c2 = cells->list + cells->pairs[2*k+1];
+  for (int ii = 0; ii < part->N; ii++) {
+    x[0] = part->x[3*ii+0];
+    x[1] = part->x[3*ii+1];
+    x[2] = part->x[3*ii+2];
     
-    for (int i = 0; i < c1->natoms; i++) {
-      int ii = c1->idxlist[i];
-      for (int l=0; l < 3; l++) {
-	p[l] = part->v[3*ii+l];
-	x[l] = part->x[3*ii+l];
+    for (int j = 0; j< neighbor->num[ii]; j++) {
+      int jj  = neighbor->list[ii*part->N + j];
+      if (part->isospin[ii] != part->isospin[jj]) continue;
+      if (part->spin[ii] != part->spin[jj]) continue;
+      sqp = 0.0;
+      sqx = 0.0;
+      for (int l = 0; l < 3; l++) {
+        dp[l] = part->mass * (p[l] - part->v[3*jj + l]);
+        dx[l] = box->pbc(x[l] - part->x[3*jj + l], l);
+        sqp += dp[l] * dp[l];
+        sqx += dx[l] * dx[l];
       }
-      
-      for (int j = 0; j < c2->natoms; j++) {
-	int jj = c2->idxlist[j];
-	if (part->spin[ii] != part->spin[jj]) continue;
-	if (part->isospin[ii] != part->isospin[jj]) continue;
-
-	sqp = 0.0;
-	sqx = 0.0;
-	
-	for (int l = 0; l < 3; l++) {
-	  dp[l] = part->mass * (p[l] - part->v[3*jj + l]);
-	  dx[l] = box->pbc(x[l] - part->x[3*jj + l], l);
-	  sqp += dp[l] * dp[l];
-	  sqx += dx[l] * dx[l];
-	}
-
-	/* We check whether the particles are inside the 3sigma
-	   ellipsoid */
-	double u = sqp/(3 * part->sigma_p * 3 * part->sigma_p);
-	u += sqx/(3 * part->sigma_r * 3 * part->sigma_r);
-	if (u < 1) {
-	  int occ = 1.0;
-	  for (int l = 0; l < 3; l++) {
-	    occ *= gamma(fabs(dp[l])/(sqrt(2)* part->sigma_p));
-	    occ *= gamma(fabs(dx[l])/(sqrt(2)* part->sigma_r));
-	  }
-	  part->occ[ii] += occ;	
-	  part->occ[jj] += occ;
-	}
+      /* We check whether the particles are inside the 3sigma
+         ellipsoid */
+      double u = sqp/(3 * part->sigma_p * 3 * part->sigma_p);
+      u += sqx/(3 * part->sigma_r * 3 * part->sigma_r);
+      if (u < 1) {
+        double occ = 1.0;
+        for (int l = 0; l < 3; l++) {
+          occ *= gamma(fabs(dp[l])/(sqrt(2)* part->sigma_p));
+          occ *= gamma(fabs(dx[l])/(sqrt(2)* part->sigma_r));
+        }
+        part->occ[ii] += occ;	
+        part->occ[jj] += occ;
       }
     }
   }
+}
 }
 

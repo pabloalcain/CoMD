@@ -1,7 +1,7 @@
 #include "sys.h"
 
 System::System(Box *_box, Particles *_part, Potential *_pot,
-	       Integrator *_integ, Dump *_dump, Thermo *_thermo){
+               Integrator *_integ, Dump *_dump, Thermo *_thermo){
   box = _box;
   part = _part;
   pot = _pot;
@@ -36,18 +36,18 @@ void System::forces_neigh() {
       int jj  = neighbor->list[ii*part->N + j];
       t2 = part->isospin[jj]?2:1;
       for (int l = 0; l < 3; l++) {
-	dx[l] = box->pbc(x[l] - part->x[3*jj + l], l);
+        dx[l] = box->pbc(x[l] - part->x[3*jj + l], l);
       }
       dr = dx[0] * dx[0] + dx[1] * dx[1] + dx[2] * dx[2];
       if (dr < pot->rcut[t1][t2] * pot->rcut[t1][t2]) {
-	dr = sqrt(dr);
-	dphi = pot->dphi(dr, t1, t2, &pe);
-	part->pe += pe;
-	for (int l = 0; l < 3; l++) {
-	  /* Newton's 3rd law */
-	  part->f[3*ii + l] += dphi * dx[l];
-	  part->f[3*jj + l] -= dphi * dx[l];
-	}
+        dr = sqrt(dr);
+        dphi = pot->dphi(dr, t1, t2, &pe);
+        part->pe += pe;
+        for (int l = 0; l < 3; l++) {
+          /* Newton's 3rd law */
+          part->f[3*ii + l] += dphi * dx[l];
+          part->f[3*jj + l] -= dphi * dx[l];
+        }
       }
     }
   }
@@ -62,7 +62,7 @@ void System::forces_all() {
   
   part->pe = 0;
   for (int ii = 0; ii < 3*part->N; ii++)
-      part->f[ii] = 0;
+    part->f[ii] = 0;
   
   for (int ii = 0; ii < part->N-1; ii++) {
     x = part->x + 3*ii;
@@ -71,20 +71,20 @@ void System::forces_all() {
     for (int jj = ii+1; jj < part->N; jj++) {
       t2 = part->isospin[jj]?2:1;
       for (int l = 0; l < 3; l++) {
-	dx[l] = box->pbc(x[l] - part->x[3*jj + l], l);
+        dx[l] = box->pbc(x[l] - part->x[3*jj + l], l);
       }
       dr = dx[0] * dx[0] + dx[1] * dx[1] + dx[2] * dx[2];
       
 
       if (dr < pot->rcut[t1][t2] * pot->rcut[t1][t2]) {
-	  dr = sqrt(dr);
-	  dphi = pot->dphi(dr, t1, t2, &pe);
-	  part->pe += pe;
-	  for (int l = 0; l < 3; l++) {
-	      /* Newton's 3rd law */
-	      part->f[3*ii + l] += dphi * dx[l];
-	      part->f[3*jj + l] -= dphi * dx[l];
-	  }
+        dr = sqrt(dr);
+        dphi = pot->dphi(dr, t1, t2, &pe);
+        part->pe += pe;
+        for (int l = 0; l < 3; l++) {
+          /* Newton's 3rd law */
+          part->f[3*ii + l] += dphi * dx[l];
+          part->f[3*jj + l] -= dphi * dx[l];
+        }
       }
     }
   }
