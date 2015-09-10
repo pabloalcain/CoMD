@@ -97,7 +97,10 @@ void System::run(int nsteps) {
   forces_neigh();
     
   for (int i = 0; i < nsteps; i++) {
-    if (i % comd->ncheck == 0) comd->check_occupation(part, cells, box);
+    if (i % comd->ncheck == 0) {
+      comd->check_occupation(part, neighbor, box);
+      comd->change_momentum(part, neighbor, box);
+    }
     if (i % dump->nfreq == 0) dump->write(i, part, box);
     if (i % thermo->nfreq == 0) thermo->write(i, part);
 

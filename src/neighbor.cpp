@@ -38,15 +38,15 @@ void Neighbor::update(CellList *cells, Particles *part, Potential *pot, Box *box
       x[2] = part->x[3*ii+2];
       t1 = part->isospin[ii]?2:1;
       for (int j = i+1; j < cell->natoms; j++) {
-	t2 = part->isospin[ii]?2:1;
-	int jj = cell->idxlist[j];
-	dr = 0;
-	for (int l = 0; l < 3; l++)
-	  dr += box->pbc(x[l] - part->x[3*jj + l], l) * box->pbc(x[l] - part->x[3*jj + l], l);
-	if (dr < cutoff[t1][t2] * cutoff[t1][t2]){
-	  list[ii*part->N + n] = jj;
-	  n++;
-	}
+        t2 = part->isospin[ii]?2:1;
+        int jj = cell->idxlist[j];
+        dr = 0;
+        for (int l = 0; l < 3; l++)
+          dr += box->pbc(x[l] - part->x[3*jj + l], l) * box->pbc(x[l] - part->x[3*jj + l], l);
+        if (dr < cutoff[t1][t2] * cutoff[t1][t2]){
+          list[ii*part->N + n] = jj;
+          n++;
+        }
       }
       num[ii] = n;
     }
@@ -64,16 +64,16 @@ void Neighbor::update(CellList *cells, Particles *part, Potential *pot, Box *box
       x[1] = part->x[3*ii+1];
       x[2] = part->x[3*ii+2];
       for (int j = 0; j < c2->natoms; j++) {
-	int jj = c2->idxlist[j];
-	t2 = part->isospin[ii]?2:1;
-	dr = 0;
-	for (int l = 0; l < 3; l++)
-	  dr += box->pbc(x[l] - part->x[3*jj + l], l) * box->pbc(x[l] - part->x[3*jj + l], l);
+        int jj = c2->idxlist[j];
+        t2 = part->isospin[ii]?2:1;
+        dr = 0;
+        for (int l = 0; l < 3; l++)
+          dr += box->pbc(x[l] - part->x[3*jj + l], l) * box->pbc(x[l] - part->x[3*jj + l], l);
 
-	if (dr < pot->rcut[t1][t2] * pot->rcut[t1][t2]){
-	  list[ii*part->N + n] = jj;
-	  n++;
-	}
+        if (dr < pot->rcut[t1][t2] * pot->rcut[t1][t2]){
+          list[ii*part->N + n] = jj;
+          n++;
+        }
       }
       num[ii] = n;
     }

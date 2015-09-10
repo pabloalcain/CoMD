@@ -1,7 +1,7 @@
 # -*- Makefile -*-
 SHELL=/bin/sh
 CXX=g++
-CFLAGS=-Wall -g -O3 -pg -ffast-math -Wextra -pedantic #-fsanitize=address  -fno-omit-frame-pointer
+CFLAGS=-Wall -g -O0 -pg -ffast-math -Wextra -pedantic -std=gnu++11#-fsanitize=address  -fno-omit-frame-pointer
 
 # list of source files
 SRC=box.cpp integrator.cpp particles.cpp potential.cpp sys.cpp cell.cpp dump.cpp thermo.cpp comd.cpp units.cpp neighbor.cpp run.cpp 

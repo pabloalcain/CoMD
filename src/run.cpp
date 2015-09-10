@@ -3,20 +3,20 @@
 int main(int argc, char* argv[]) {
   int nsteps;
   Box *box = new Box(20.0);
-  //Particles *particles = new Particles(20, 20, box);
-  Particles *particles = new Particles("init.lammpstrj", box);
+  Particles *particles = new Particles(20, 20, box);
+  //Particles *particles = new Particles("init.lammpstrj", box);
   Potential *potential = new Potential(particles);
   //Integrator *integrator = new Integrator(0.1);
-  Integrator *integrator = new Cooldown(0.1, 0.99, 2000);
+  Integrator *integrator = new Cooldown(0.1, 0.9, 200);
   
   
   std::ofstream file;
   file.open("dump.lammpstrj");
-  Dump *dump = new Dump(1000, &file);
+  Dump *dump = new Dump(1, &file);
   
   std::ofstream file2;
   file2.open("thermo.out");
-  Thermo *thermo = new Thermo(1000, &file2);
+  Thermo *thermo = new Thermo(1, &file2);
   
   if (argc != 2) {
     std::cerr << "usage: " << argv[0] << " nsteps" << std::endl;

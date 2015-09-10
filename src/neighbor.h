@@ -9,7 +9,8 @@ class Neighbor
 {
   friend class System;
   friend class CellList;
-  int *list;
+  friend class CoMD; 
+ int *list;
   int *num;
   double **cutoff, maxcutoff;
   int nfreq;

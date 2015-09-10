@@ -75,7 +75,7 @@ Particles::Particles(int nprot, int nneut, Box *box){
 
   /* Dummy values */
   sigma_r = 1.3;
-  sigma_p = 0.47;
+  sigma_p = 0.47*197.33/6.3; //quickhack for hbar. need to work this out on my mind
   mass = 938.0;
 }
 
@@ -125,6 +125,6 @@ Particles::Particles(const std::string& fname, Box *box){
   }
   /* Dummy values */
   sigma_r = 1.3;
-  sigma_p = 0.47;
+  sigma_p = 0.47*197.33;
   mass = 938.0;
 }

@@ -93,7 +93,7 @@ double Potential::dphi(double r, int t1, int t2, double *pe) {
 
 void Potential::write_table(int npoints, double rmin, double rmax) {
   std::ofstream file;
-  double r, etot;
+  double r;
   file.open("table.dat");
   file << "#r, Vvol, Vthree, Vsym, Vsurf, Fvol, Fthree, Fsym, Fsurf" << std::endl;
   for (int i = 0; i < npoints; i++){
