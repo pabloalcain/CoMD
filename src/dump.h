@@ -5,6 +5,7 @@
 #include <string>
 
 #include "particles.h"
+#include "comd.h"
 #include "box.h"
 
 class Dump

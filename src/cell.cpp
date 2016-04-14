@@ -12,7 +12,7 @@ void Cell::add_atom(int idx) {
   natoms++;
 }
 
-CellList::CellList(double length, Particles *part, Potential *pot, Box *box){
+CellList::CellList(double length, Particles *part, double cutoff, Box *box){
   /* length is the (max) size of the cell. It will be slightly changed
      to fit an integer number of cells in the simulation box. N is the
      total number of particles.
@@ -21,6 +21,7 @@ CellList::CellList(double length, Particles *part, Potential *pot, Box *box){
      the maximum cell list*/
   
   /* Create the cell list */
+
   ncells = 1;
   for (int i=0; i<3; i++) {
     ngrid[i]  = floor(box->size[i] / length);
@@ -62,27 +63,27 @@ CellList::CellList(double length, Particles *part, Potential *pot, Box *box){
       }
 
       /* check for cells on a line that are too far apart */
-      if (fabs(r[0]) > pot->rcut + delta[0]) continue;
-      if (fabs(r[1]) > pot->rcut + delta[1]) continue;
-      if (fabs(r[2]) > pot->rcut + delta[2]) continue;
+      if (fabs(r[0]) > cutoff + delta[0]) continue;
+      if (fabs(r[1]) > cutoff + delta[1]) continue;
+      if (fabs(r[2]) > cutoff + delta[2]) continue;
 
       /* check for cells in a plane that are too far apart */
       dist = r[0]*r[0] + r[1]*r[1];	
       delta2 = delta[0]*delta[0] + delta[1]*delta[1];
-      if (sqrt(dist) > pot->rcut + sqrt(delta2)) continue;
+      if (sqrt(dist) > cutoff + sqrt(delta2)) continue;
 
       dist = r[2]*r[2] + r[1]*r[1];	
       delta2 = delta[2]*delta[2] + delta[1]*delta[1];
-      if (sqrt(dist) > pot->rcut + sqrt(delta2)) continue;
+      if (sqrt(dist) > cutoff + sqrt(delta2)) continue;
 
       dist = r[0]*r[0] + r[2]*r[2];	
       delta2 = delta[0]*delta[0] + delta[2]*delta[2];
-      if (sqrt(dist) > pot->rcut + sqrt(delta2)) continue;
+      if (sqrt(dist) > cutoff + sqrt(delta2)) continue;
 
       /* other cells that are too far apart */
       dist = r[0]*r[0] + r[1]*r[1] + r[2]*r[2];
       delta3 = delta[0]*delta[0] + delta[1]*delta[1] + delta[2]*delta[2];
-      if (sqrt(dist) > pot->rcut + sqrt(delta3)) continue;
+      if (sqrt(dist) > cutoff + sqrt(delta3)) continue;
 
       /* cells are close enough. add to list */
       pairs[2*npairs+0] = i;
@@ -113,7 +114,7 @@ void CellList::update(Particles *part, Box *box)
     }
     cellidx = ngrid[0]*ngrid[1]*i1[2]+ngrid[0]*i1[1]+i1[0];
     if (cellidx > ncells - 1 || cellidx < 0) {
-      std::cout << "Error: cell " << i1[0] << ", " << i1[1] << ", " << i1[2] <<
+      std::cerr << "Error: cell " << i1[0] << ", " << i1[1] << ", " << i1[2] <<
 	" does not exist. Maybe atom " << atom << ", x = " << pos[0] << ", " <<
 	pos[1] << ", " << pos[2] << " is out of bounds?" << std::endl;
       exit(1);
@@ -124,7 +125,7 @@ void CellList::update(Particles *part, Box *box)
     if (idx > maxidx) maxidx = idx;
   }
   if (maxidx > nidx) {
-    std::cout << "Error: overflow in cell list: " << maxidx << "/" << nidx
+    std::cerr << "Error: overflow in cell list: " << maxidx << "/" << nidx
 	      << " atoms/cell." << std::endl;
     exit(1);
   }
