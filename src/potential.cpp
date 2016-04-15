@@ -77,18 +77,6 @@ double Potential::dphi(double r, int t1, int t2, double *pe) {
     *pe = evol + ethree - esym + esurf;
     return vol + three - sym + surf;
   }
-
-
-  // double invdr = 1.0/dr;
-  // double invdr2 = invdr * invdr;
-  // double invdr6 = invdr2 * invdr2 * invdr2;
-  // double invdr12 = invdr6 * invdr6;
-  // if (t1 != t2) {
-  //   invdr12 *= 0;
-  //   invdr6 *= 0;
-  // }
-  // *pe = 4.0 * (invdr12 - invdr6) - phicut[t1][t2];
-  // return 24.0 * invdr2 * (2.0 * invdr12 - invdr6);
 }
 
 void Potential::write_table(int npoints, double rmin, double rmax) {
