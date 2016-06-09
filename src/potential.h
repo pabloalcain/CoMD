@@ -1,5 +1,6 @@
 #ifndef POTENTIAL_H
 #define POTENTIAL_H
+#include "math.h"
 
 class Potential
 {
@@ -9,12 +10,17 @@ class Potential
     double asym;
     double cs;
     double e;
+    double p0;
+    double v0;
+    double hbarra;
+    double D;
     
 public:
     double rcut;
     double phicut;
     Potential();
-    double dphi(double dr, double *pe);
+    double dphi(double dr, double dp, double *pe);
+    double dpsi(double dr, double dp, double *pe);
 };
 
 #endif
