@@ -5,6 +5,7 @@ Particles::Particles(int nprot, int nneut, Box box){
     x = (double *) malloc(3 * N * sizeof(double));
     v = (double *) malloc(3 * N * sizeof(double));
     f = (double *) malloc(3 * N * sizeof(double));
+    g = (double *) malloc(3 * N * sizeof(double));
     isospin = (bool *) malloc(N * sizeof(char));
     spin = (bool *) malloc(N * sizeof(char));
     
