@@ -1,18 +1,18 @@
 #include "potential.h"
 #include <iostream>
 
-Potential::Potential() {
+Potential::Potential(Particles *part) {
   /* The default constructor has 2 types of particles and sets the
    values as in CoMD. We pass the particles to also know the size in
    q-space. */
-
+  
   r0 = 1;
   p0 = 1;
   v0 = 1;
   hbarra = 1;
   D = 1;
   
-  /*
+  
   int n = part->ntypes;
 
 
@@ -45,7 +45,7 @@ Potential::Potential() {
   dphi(rcut[2][1], 2, 1, &(phicut[2][1]));
   dphi(rcut[1][2], 1, 2, &(phicut[1][2]));
   dphi(rcut[2][2], 2, 2, &(phicut[2][2]));
-  */
+  
 }
 
 

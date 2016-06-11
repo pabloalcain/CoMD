@@ -2,6 +2,7 @@
 
 Particles::Particles(int nprot, int nneut, Box box){
     N = nprot + nneut;
+    ntypes = 2;
     x = (double *) malloc(3 * N * sizeof(double));
     v = (double *) malloc(3 * N * sizeof(double));
     f = (double *) malloc(3 * N * sizeof(double));

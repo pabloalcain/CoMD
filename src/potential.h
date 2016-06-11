@@ -1,7 +1,7 @@
 #ifndef POTENTIAL_H
 #define POTENTIAL_H
 #include "math.h"
-
+#include "particles.h"
 class Potential
 {
     /* Basic CoMD potential structure, with all the parameters */
@@ -16,9 +16,10 @@ class Potential
     double D;
     
 public:
-    double rcut;
-    double phicut;
-    Potential();
+    
+    double** rcut;
+    double** phicut;
+    Potential(Particles *_part);
     double dphi(double dr, double dp, double *pe);
     double dpsi(double dr, double dp, double *pe);
 };
